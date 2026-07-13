@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>En Kapsamlı Müşteri Analitiği: Basit Anlatım Rehberi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Nunito:wght@400;600;700&display=swap');
+        
+        :root {
+            --primary-dark: #064e3b; /* Deep emerald green */
+            --primary: #047857; /* Emerald */
+            --accent: #f59e0b; /* Amber */
+            --accent-light: #fef3c7;
+            --text-main: #334155;
+            --bg-main: #ffffff;
+            --border-light: #e2e8f0;
+            --surface: #f0fdf4; /* Light mint green */
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-main);
+            line-height: 1.8;
+            font-size: 11.5pt;
+            margin: 0;
+            padding: 0;
+            text-align: justify;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--primary-dark);
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        /* COVER PAGE STYLING */
+        .cover-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            page-break-after: always;
+            padding: 40px;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #dcfce7 0%, #ffffff 100%);
+            position: relative;
+        }
+        
+        .cover-border {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            right: 25px;
+            bottom: 25px;
+            border: 3px solid var(--primary);
+            border-radius: 20px;
+            z-index: 1;
+        }
+
+        .cover-content {
+            z-index: 2;
+            padding: 45px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            max-width: 85%;
+        }
+
+        .cover-title {
+            font-size: 36pt;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+            color: var(--primary-dark);
+        }
+        
+        .cover-divider {
+            height: 6px;
+            width: 120px;
+            background-color: var(--accent);
+            margin: 0 auto 30px auto;
+            border-radius: 6px;
+        }
+
+        .cover-subtitle {
+            font-family: 'Nunito', sans-serif;
+            font-size: 16pt;
+            font-weight: 700;
+            color: #475569;
+            margin-top: 0;
+            line-height: 1.6;
+        }
+        
+        .cover-author {
+            margin-top: 70px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 13pt;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: 3px;
+            background: var(--surface);
+            padding: 12px 25px;
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* CONTENT STYLING */
+        .content {
+            padding: 0;
+        }
+        
+        .content > h1:first-child {
+            display: none;
+        }
+
+        h2 {
+            font-size: 21pt;
+            margin-top: 55px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            page-break-before: always;
+            color: var(--primary-dark);
+        }
+        
+        .content > h2:first-of-type {
+            page-break-before: auto;
+        }
+
+        h3 {
+            font-size: 16pt;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            background: var(--surface);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 5px solid var(--accent);
+        }
+
+        p {
+            margin-bottom: 18pt;
+        }
+
+        .premium-quote {
+            background-color: var(--accent-light);
+            border-left: 6px solid var(--accent);
+            padding: 22pt;
+            margin: 35pt 0;
+            font-size: 12.5pt;
+            font-weight: 700;
+            color: #b45309;
+            border-radius: 0 15px 15px 0;
+            box-shadow: 0 5px 10px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .premium-quote p {
+            margin: 0;
+        }
+
+        ul, ol {
+            padding-left: 30pt;
+            margin-bottom: 25pt;
+        }
+
+        li {
+            margin-bottom: 12pt;
+        }
+        
+        li::marker {
+            color: var(--primary);
+            font-weight: 900;
+        }
+
+        strong {
+            font-weight: 800;
+            color: var(--primary-dark);
+            background: rgba(4, 120, 87, 0.08);
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cover-page">
+        <div class="cover-border"></div>
+        <div class="cover-content">
+            <div class="cover-title">Veri Bilimi ve Müşteri Modelleri</div>
+            <div class="cover-divider"></div>
+            <div class="cover-subtitle">Kapsamlı, Eksiksiz ve En Basit Anlatım<br>(Tüm Konular - Dev Rehber)</div>
+            <div class="cover-author">MASTER DERS KİTABI</div>
+        </div>
+    </div>
+    <div class="content">
+        <h1>Veri Bilimi ve Müşteri Analitiği: Herkes İçin A'dan Z'ye Mantık Rehberi</h1>
+<blockquote class="premium-quote">
+<p>[!NOTE]
+Bu doküman, dünyadaki en gelişmiş müşteri analitiği algoritmalarının (Olasılık Modelleri, Derin Öğrenme, Yaşam Çözümlemesi, MCMC) <strong>tek bir matematiksel formül bile kullanılmadan, sadece bakkal, basketbolcu ve zar atma örnekleriyle</strong> anlatıldığı devasa bir rehberdir.</p>
+</blockquote>
+<h2>1. Neden Şirketlerin Kuralları Çöker? (Seyreklik ve Ortalamaya Dönüş)</h2>
+<p>Şirketlerin en çok yaptığı hata şudur: <em>"Son 6 ayda bizden alışveriş yapmayan müşteri bizi bırakmıştır."</em> Bu kural iki devasa doğa kanununa aykırıdır:</p>
+<p><strong>A. Seyreklik (Sparsity):</strong>
+İnsanların çoğu, markalarla her gün etkileşime girmez. Araba lastiğini 3 yılda bir değiştirirsiniz. Eğer lastikçi "son 6 aydır gelmedi, bu adamı kaybettik" derse aptallık eder. İnsanların verisi "seyrektir", yani davranışlar arasında devasa boşluklar vardır. Bu boşluklar ölüm (churn) demek değildir; sadece doğanın akışıdır.</p>
+<p><strong>B. Ortalamaya Dönüş (Regression to the Mean):</strong>
+Diyelim ki bir basketbolcu bir maçta 50 sayı attı. İkinci maçta ondan yine 50 sayı atmasını beklerseniz hayal kırıklığına uğrarsınız, büyük ihtimalle 20 atacaktır. Çünkü 50 sayı "şans ve ekstrem" bir durumdur; doğa her zaman uçarı davranışları <strong>popülasyonun ortalamasına doğru geri çeker</strong>. 
+Müşteri bir hafta üst üste her gün kahve alırsa, şirket "harika, bu adam hep böyle olacak" der. Oysa müşteri sadece o hafta hastanede nöbetçidir. Geleceği tahmin ederken, insanların o anlık "çılgın" davranışlarına değil, uzun vadeli ortalamalarına güvenmeliyiz.</p>
+<h2>2. Bayesyen Felsefe: İnsan Beyninin Algoritması</h2>
+<p>Modellerin hepsi Bayesyen'dir. Bayesyen demek, "yeni kanıt gördükçe fikrini değiştirmek" demektir.</p>
+<p><strong>Örnek:</strong> Karanlık bir odada kaybettiğiniz anahtarı arıyorsunuz.
+- <strong>Prior (Önsel İnanç):</strong> "Dün anahtarı genelde masanın üstüne bırakmıştım, oraya bakayım." (Geçmiş tecrübeler, yani tüm müşterilerin genel ortalaması).
+- <strong>Likelihood (Yeni Kanıt):</strong> Yerde anahtarlığın ucundaki küçük süsü buldunuz. 
+- <strong>Posterior (Güncellenmiş İnanç):</strong> "Tamam, masada değilmiş, kesin bu süsün düştüğü yerin etrafında." (Fikrinizi güncellediniz).</p>
+<p>Müşteri kapıdan girdiğinde, onun hakkında hiçbir şey bilmeyiz. Onu "ortalama bir vatandaş" (Prior) olarak varsayarız. Müşteri her alışveriş yaptığında bize "ipucu" verir. Biz de onun kim olduğunu yavaş yavaş anlarız. 
+<strong>Büzülme (Shrinkage) Kuralı:</strong> Eğer bir adam hakkında çok ipucu varsa (eski müşteri), sadece onun davranışlarına bakarız. Eğer adam hakkında az ipucu varsa (yeni müşteri), onun hareketlerine pek güvenmeyiz ve onu toplumun genel ortalamasına benzetiriz.</p>
+<h2>3. RFM Analizi vs. Müşteri Yaşam Boyu Değeri (CLV)</h2>
+<p><strong>RFM Nedir?</strong> Recency (Son geliş zamanı), Frequency (Geliş sıklığı), Monetary (Harcadığı para). Şirketler müşterileri bu 3 skora göre sıralar.
+Ancak RFM geçmişe bakar, <strong>CLV (Müşteri Yaşam Boyu Değeri)</strong> ise geleceğe.</p>
+<p><strong>İzo-Değer Eğrileri (Iso-Value Curves):</strong>
+Şu iki müşteriyi kıyaslayalım:
+- <strong>Ahmet:</strong> 2 yılda <strong>10 kere</strong> gelmiş, son gelişinden bu yana <strong>1 yıl geçmiş</strong>. (Sıklığı yüksek, Yeniliği düşük)
+- <strong>Ayşe:</strong> 2 yılda <strong>2 kere</strong> gelmiş, son gelişinden bu yana <strong>1 yıl geçmiş</strong>. (Sıklığı düşük, Yeniliği düşük).</p>
+<p>Şirketler der ki: "Ahmet eskiden çok geliyordu, Ahmet daha değerli." 
+Oysa CLV modelleri ispatlar ki: <strong>Ahmet muhtemelen çoktan ölmüştür!</strong> 
+Çünkü Ahmet gibi her ay mağazaya gelen bir "müdavimin" 1 yıl boyunca ortadan kaybolması korkunç bir sinyaldir, adam kesinlikle rakip firmaya geçmiştir. Ancak Ayşe zaten yılda bir geliyordu, onun 1 yıl kaybolması çok normaldir. Ayşe hala hayattadır! İşte RFM'in "sık gelen her zaman iyidir" mantığı bu yüzden iflas eder.</p>
+<h2>4. Pareto/NBD Modeli: Sürekli Zamanın Efendisi</h2>
+<p>E-ticaret gibi müşterinin gece 3'te bile gelip alabildiği modellere "Sürekli Zaman" denir.
+Pareto/NBD müşterinin içine iki tane varlık yerleştirir:
+1. <strong>İçimizdeki Alışveriş Canavarı (Poisson Dağılımı):</strong> Rastgele zamanlarda uyanıp "hadi alışveriş yapalım" der. Bu canavarın uyanma hızı kişiden kişiye değişir (Kimi haftada bir, kimi yılda bir uyanır).
+2. <strong>Kırılma Perisi / Ölüm (Üstel Dağılım):</strong> Bu peri, müşteri hayattayken rastgele bir saniyede gelir ve "artık bu markayı terk ediyoruz" der. </p>
+<p>İşte model, müşterinin geliş sürelerindeki "sessizliğe" bakarak şu tahmini yapar: Bu sessizlik, Alışveriş Canavarının yavaşlığından mı kaynaklanıyor, yoksa Kırılma Perisi geldiği için mi?</p>
+<h2>5. BG/NBD Modeli: Kasada Yazı Tura Atmak</h2>
+<p>Pareto'nun matematiği çok ağırdı. Araştırmacılar dedi ki: "İnsanlar durduk yere, gece uyurken kurumu terk etmezler."
+<strong>BG/NBD'nin Farkı:</strong> Müşteri sadece ve sadece <strong>bir alışveriş yaptıktan HEMEN SONRA</strong> kurumu terk edip etmemeye karar verir. 
+Müşteri kasadan geçer, fişini alır, hizmeti değerlendirir ve zihninde hileli bir bozuk para atar.
+- Yazı gelirse: "Hizmet güzel, bir dahaki sefere yine gelirim."
+- Tura gelirse: "Bu ne rezalet, bir daha buraya adım atmam." (Ölüm).</p>
+<p>Her alışveriş, müşterinin zihninde attığı yeni bir zardır.</p>
+<h2>6. BG/BB Modeli: Kesikli Zaman (Sadece Fırsat Çıktığında)</h2>
+<p>Peki ya müşterinin gece 3'te gelme şansı yoksa? Sadece sizin gönderdiğiniz mektup/katalog üzerine veya ayda bir çıkan derginizi alıyorsa? Buna <strong>Kesikli Zaman</strong> denir. Fırsat doğmadan eylem yapılamaz.
+Burada müşteri iki zar atar:
+1. <strong>Zar 1 (Ölüm):</strong> "Bu dergiye aboneliğimi iptal etmeli miyim?"
+2. <strong>Zar 2 (Satın Alma):</strong> "Ölmedim tamam, peki bu ayki sayıyı almalı mıyım?"</p>
+<p>Model, milyonlarca müşterinin geçmişine bakarak, herkesin bu zarlardaki şike oranlarını (p ve theta olasılıklarını) bulur.</p>
+<h2>7. sBG Modeli: Abonelik Dünyası ve Eğrilerin Düzleşmesi</h2>
+<p>Netflix veya Spor Salonu aboneliğinizi düşünün. 
+Genelde 1. ayın sonunda kullanıcıların yarısı üyeliği iptal eder. Şirket paniğe kapılır: "Eyvah, her ay yarısı gidecek!" 
+Ancak sBG modeli der ki: <strong>Korkma, eğri zamanla düzleşecek.</strong>
+Neden? Çünkü ilk aylarda iptal edenler zaten markaya bağlı olmayan, "sadece denemeye gelen" heveslilerdir. Onlar (kötü elmalar) sistemden elenip gittikçe, geriye kalanlar zaten "sadık" olan çekirdek kitledir. Sadık kitle kalıcı olduğu için, terk etme (churn) oranı aylar geçtikçe inanılmaz derecede yavaşlar ve sıfıra yaklaşır.</p>
+<h2>8. Yaşam Çözümlemesi (Survival Analysis) ve Sağdan Sansürleme</h2>
+<p>Bankalarda churn oranını hesaplarken çok büyük bir hata yapılır.
+<strong>Sağdan Sansürleme Nedir?</strong>
+Bir bankada 2010'dan beri çalışan iki müşteri var. Ahmet 2015'te ayrıldı (Ömrü 5 yıl). Mehmet ise <strong>bugün hala müşterimiz.</strong>
+Mehmet'in ömrü nedir? 14 yıl mı? Hayır, Mehmet belki 20 yıl daha kalacak. Biz sadece Mehmet'in "EN AZ 14 yıl" kaldığını biliyoruz. Gelecek (sağ taraf) sansürlüdür.
+Eğer analiz yaparken Mehmet'i "Bunun sonunu bilmiyoruz, bunu hesaba katmayalım" diyip çöpe atarsak, elimizde sadece "ayrılıp giden kötü müşteriler (Ahmet gibiler)" kalır. Modelimiz felaket derecede karamsar olur.
+<strong>Cox Orantısal Tehlike Modeli</strong>, hala hayatta olan Mehmet'leri çöpe atmaz; onların 14 yıl hayatta kalma "başarısını" formüle dahil ederek, gerçek bir yaşam beklentisi çizer.</p>
+<p><em>(İlginç bir detay: Eğitim düzeyi yüksek banka müşterileri, genelde o bankayı "yedek/ikincil" banka olarak tuttukları için, oradan çok zor ayrılırlar. Yani eğitim düzeyi arttıkça churn düşer!)</em></p>
+<h2>9. Derin Öğrenme (Deep Learning) ile Churn: Alışveriş Fişi Bir Şiir Gibidir</h2>
+<p>Eskiden yapay zekaya müşterinin sadece toplam harcamasını söylerdik. Ama modern Derin Öğrenme (RNN - Recurrent Neural Networks veya LSTM) der ki: <strong>Sıralama önemlidir.</strong>
+Bir müşterinin aylarca "süt -&gt; yumurta -&gt; ekmek" alıp, sonraki ay "süt -&gt; yumurta -&gt; çikolata" alması, sadece ürün değişimi değil, müşterinin hayatındaki bir değişimin (örneğin çocuğu olduğunun veya stresli bir döneme girdiğinin) sinyalidir.
+RNN algoritmaları, tıpkı bir cümlenin gidişatından son kelimeyi tahmin eden ChatGPT gibi, alışveriş fişlerindeki "sıralamayı" bir şiir gibi okur. Alışkanlıklardaki ufacık sapmaları fark edip "Bu adam 2 ay sonra bizi terk edecek" diye alarm verir.</p>
+<h2>10. PU (Positive-Unlabeled) Learning: "Seni Terk Ettim" Demeyenleri Bulmak</h2>
+<p>Sözleşmesiz ortamlarda müşteri sizi terk ettiğinde arayıp "ben gidiyorum" demez (Sessiz ayrılış).
+Elinizdeki veride sadece iki tür insan vardır:
+- <strong>Pozitifler (P):</strong> Kesin olarak öldüğünü bildikleriniz (hesabını kapatanlar).
+- <strong>Etiketlenmemişler (U - Unlabeled):</strong> Hala hayatta GİBİ görünen ama sessiz olanlar. Bunların bir kısmı gerçekten sadık müşteri, bir kısmı ise çoktan ölmüş ama haberi yok!
+Geleneksel yapay zeka algoritmaları bu U grubunun hepsini "iyi müşteri" zanneder ve felaket sonuçlar üretir. 
+PU Learning algoritmaları ise, kesin ölenlere (Pozitif) bakar, onların ayak izlerini kopyalar ve o koskoca etiketlenmemiş (Unlabeled) yığının içine girip, "Sen hayatta gibi görünüyorsun ama ayak izin ölenlere benziyor, sen aslında ölüsün!" diyerek gizli churn'leri tespit eder. Zamana karşı inanılmaz duyarlıdır.</p>
+<h2>11. Peki Bu Modeller Bilgisayarda NASIL Çözülüyor? (MCMC ve Monte Carlo)</h2>
+<p>Mühendislerin en büyük sırrına geldik. Ortada harika formüller var ama bilgisayar sonsuz ihtimalleri nasıl hesaplıyor?</p>
+<p><strong>Monte Carlo Simülasyonu:</strong>
+Alanı yamuk yumuk, matematiksel formülle hesaplanamayan bir göl düşünün. Gölün alanını nasıl bulursunuz? Göle bakmadan haritanın üzerine 100.000 tane rastgele dart oku atarsınız. Okların yüzde kaçının gölün içine düştüğünü sayarak gölün alanını mükemmel şekilde bulursunuz! Bilgisayarlar da çözülemez kalkülüs integrallerini işte böyle, "rastgele milyonlarca zar atarak" çözer.</p>
+<p><strong>MCMC (Markov Chain Monte Carlo) ve Gibbs Sampling:</strong>
+Diyelim ki zifiri karanlık bir odadasınız. Amacınız odanın en yüksek noktasını (en doğru parametreyi) bulmak. Odanın şeklini bilmiyorsunuz.
+MCMC şöyle yapar:
+1. Rastgele bir adım at.
+2. Ayak ucunla kontrol et; eğer zemin daha yüksekse (veriye daha uygunsa) orada kal.
+3. Eğer zemin daha alçaksa, hemen geri dönme. Bazen geri dön, bazen şans verip aşağı doğru da in ki odanın başka yerlerini de keşfedebilesin (Buna Metropolis-Hastings denir).
+Bunu 50.000 kere yaparsanız, bilgisayarın attığı ayak izleri odanın mükemmel bir haritasını çıkarır!
+İşte çok karmaşık <strong>Hiyerarşik Bayes</strong> modelleri (patronun özelliklerinin müdürü, müdürün özelliklerinin işçiyi etkilediği modeller), bu "karanlıkta zar atarak tepeyi bulma" algoritması sayesinde dakikalar içinde çözülür.</p>
+    </div>
+</body>
+</html>

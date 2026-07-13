@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap');
+
+:root {
+  --primary-color: #1a365d; /* Deep blue */
+  --secondary-color: #2b6cb0; /* Brighter blue */
+  --accent-color: #ed8936; /* Orange accent */
+  --text-main: #2d3748;
+  --text-light: #4a5568;
+  --bg-color: #f7fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Merriweather', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  background-color: var(--bg-color);
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  background-color: var(--bg-card);
+  padding: 60px 80px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+/* Typography */
+h1 {
+  font-family: var(--font-serif);
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 3px solid var(--accent-color);
+  padding-bottom: 20px;
+}
+
+h2 {
+  font-family: var(--font-serif);
+  color: var(--primary-color);
+  font-size: 1.8rem;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+h3 {
+  font-family: var(--font-sans);
+  color: var(--secondary-color);
+  font-size: 1.4rem;
+  margin-top: 35px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 20px;
+  color: var(--text-light);
+}
+
+strong {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* Callouts / Highlights */
+.callout {
+  background-color: #ebf8ff;
+  border-left: 5px solid var(--secondary-color);
+  padding: 20px;
+  margin: 30px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.callout h4 {
+  color: var(--secondary-color);
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.callout p {
+  margin-bottom: 0;
+  color: #2a4365;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 30px 0;
+  font-size: 0.95rem;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+tr:hover {
+  background-color: #edf2f7;
+}
+
+/* Lists */
+ul, ol {
+  margin-bottom: 20px;
+  padding-left: 20px;
+  color: var(--text-light);
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+/* Header & Footer Info */
+.doc-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.doc-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  font-style: italic;
+  font-family: var(--font-serif);
+}
+
+.doc-meta {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Badge for variable types */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background-color: #edf2f7;
+  color: #4a5568;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.badge.target {
+  background-color: #fed7d7;
+  color: #c53030;
+}
+
+.badge.feature {
+  background-color: #c6f6d5;
+  color: #276749;
+}
+
+/* Print CSS */
+@media print {
+  body {
+    background-color: white;
+    font-size: 11pt;
+  }
+
+  .container {
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+
+  table {
+    page-break-inside: avoid;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  p, ul, ol {
+    page-break-inside: avoid;
+  }
+
+  /* Optimize colors for print */
+  h1, h2, h3 {
+    color: black;
+  }
+
+  th {
+    background-color: #f1f1f1;
+    color: black;
+    border-bottom: 2px solid black;
+  }
+
+  .callout {
+    border: 1px solid #ccc;
+    border-left: 5px solid black;
+    background-color: transparent;
+  }
+}

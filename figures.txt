@@ -1,0 +1,30 @@
+Figure 1. /T_he labels are the net spend (sales minus returns) of each
+Figure 1: Training and prediction time-scales for CLTV. /T_he
+used to learn the parameters of the RF. /T_he second row of Figure 1
+the features are not easily identi/f_iable. Figure 2 illustrates this point
+Figure 2: Illustration of the challenges of using the com-
+/T_he high-level system architecture is shown in Figure 3. Raw cus-
+Figure 3: High-level overview of the CLTV system. /T_he solid
+period. /T_his is illustrated in Figure 1. Every day we generate:
+which we already know the actual values as illustrated in Figure 1.
+Figure 4) we obtain Spearman rank-order correlation coeﬃcients
+CLTV of 0). We can see in Figure 4 that the range and density of
+with an LTV of 0). For the churn predictions (see Figure 5) we
+Predicted LTV (log)−1.5−1.0−0.50.00.51.01.5Actual LTV (log)Figure 4: Predicted CLTV against actual CLTV (excluding
+Figure 5: Churn prediction density (horizontal axis) and
+(see Figure 7). Previous work has looked at embedding products
+Figure 6 shows the neural architecture of our customer embed-
+Figure 6: Neural network architecture and matrix represen-
+/T_he output so/f_tmax layer in Figure 6 has a unit for every cus-
+Figure 7: Customer pair generation in the skip-gram model
+Figure 7 shows how we de/f_ine a context and generate customer
+BaselineFigure 8: Upli/f_t in the area under the receiver operating char-
+Figure 8 shows that we obtained a signi/f_icant upli/f_t in AUC
+live system’s feature generation period. Figure 1 shows that the
+network with the same architecture. Figure 9 shows a comparison
+Logistic regressionFigure 9: Maximum area under the receiver operating char-
+model required to outperform the AUC of the RF model. Figure 10
+in Figure 10 provide three estimates of the number of neurons that
+in performance. Figure 11 shows the relationship between mone-
+LRRFFigure 10: Maximum Area Under the receiver operating
+(Unit cost = cost to train RF model)LRRFFigure 11: Mean monetary cost to train hybrid models on a

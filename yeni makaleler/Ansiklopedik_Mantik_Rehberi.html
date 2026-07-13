@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ansiklopedik Müşteri Analitiği Rehberi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Open+Sans:wght@400;600;700;800&display=swap');
+        
+        :root {
+            --primary-dark: #1e293b; /* Slate 800 */
+            --primary: #334155; /* Slate 700 */
+            --accent: #dc2626; /* Deep Red for attention */
+            --accent-light: #fee2e2;
+            --text-main: #0f172a;
+            --bg-main: #ffffff;
+            --border-light: #cbd5e1;
+            --surface: #f8fafc;
+        }
+
+        body {
+            font-family: 'Merriweather', serif;
+            color: var(--text-main);
+            background-color: var(--bg-main);
+            line-height: 1.8;
+            font-size: 11pt;
+            margin: 0;
+            padding: 0;
+            text-align: justify;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--primary-dark);
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        /* COVER PAGE STYLING */
+        .cover-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            page-break-after: always;
+            padding: 50px;
+            box-sizing: border-box;
+            background: #f1f5f9;
+            position: relative;
+        }
+        
+        .cover-border {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            right: 30px;
+            bottom: 30px;
+            border: 4px solid var(--primary-dark);
+            z-index: 1;
+        }
+
+        .cover-inner {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 1px dashed var(--accent);
+            z-index: 1;
+        }
+
+        .cover-content {
+            z-index: 2;
+            padding: 50px;
+            background: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 80%;
+        }
+
+        .cover-title {
+            font-size: 38pt;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            color: var(--primary-dark);
+        }
+        
+        .cover-divider {
+            height: 6px;
+            width: 150px;
+            background-color: var(--accent);
+            margin: 0 auto 40px auto;
+        }
+
+        .cover-subtitle {
+            font-family: 'Merriweather', serif;
+            font-size: 16pt;
+            font-style: italic;
+            color: #475569;
+            margin-top: 0;
+            line-height: 1.7;
+        }
+        
+        .cover-author {
+            margin-top: 60px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14pt;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 2px;
+            background: var(--primary-dark);
+            padding: 12px 30px;
+            display: inline-block;
+        }
+
+        /* CONTENT STYLING */
+        .content {
+            padding: 0;
+        }
+        
+        .content > h1:first-child {
+            display: none;
+        }
+
+        h2 {
+            font-size: 22pt;
+            margin-top: 60px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary-dark);
+            page-break-before: always;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+        }
+        
+        .content > h2:first-of-type {
+            page-break-before: auto;
+        }
+
+        h3 {
+            font-size: 15pt;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            background: var(--surface);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 18pt;
+        }
+
+        blockquote, .premium-quote {
+            background-color: var(--surface);
+            border-left: 6px solid var(--accent);
+            padding: 20pt;
+            margin: 30pt 0;
+            font-size: 12pt;
+            font-style: italic;
+            color: var(--primary-dark);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        ul, ol {
+            padding-left: 30pt;
+            margin-bottom: 25pt;
+        }
+
+        li {
+            margin-bottom: 12pt;
+        }
+
+        strong {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="cover-page">
+        <div class="cover-border"></div>
+        <div class="cover-inner"></div>
+        <div class="cover-content">
+            <div class="cover-title">Müşteri Analitiği Ansiklopedisi</div>
+            <div class="cover-divider"></div>
+            <div class="cover-subtitle">Bütün Modeller, Kesin Çözümler ve "Mala Anlatır Gibi" Anlaşılır İspatlar Dev Rehberi</div>
+            <div class="cover-author">TAM KAPSAMLI LİTERATÜR</div>
+        </div>
+    </div>
+    <div class="content">
+        <h1>Müşteri Analitiği Ansiklopedisi: Adım Adım, Detaylı ve Basit Anlatım</h1>
+<h2>BÖLÜM 1: Temel Felsefe - Neden Standart Kurallar Çöker?</h2>
+<p>Şirketlerin neredeyse %90'ı müşteri sadakatini ölçmek için statik ve sığ kurallar kullanır. En meşhur kural şudur: <em>"Eğer bir müşteri son 6 aydır bizden alışveriş yapmadıysa, o müşteri ölmüştür (churn olmuştur)."</em> Bu kural o kadar tehlikelidir ki, şirketlere her yıl milyonlarca dolar kaybettirir. Nedenini iki devasa doğa kanunuyla, adım adım ve detaylıca anlatalım.</p>
+<h3>1.1. Seyreklik (Sparsity) İlkesi</h3>
+<p>"Seyreklik", verinin çok nadir bulunması demektir. Bir süpermarketi düşünün. Bazı müşteriler her sabah gelir (ekmek alır), bazıları haftada bir gelir (pazar alışverişi), bazıları ise sadece bayramdan bayrama gelir (şeker alır). 
+Eğer siz "son 6 aydır gelmeyen müşteri ölmüştür" derseniz, bayramdan bayrama gelen o koca kitleyi çöpe atarsınız. Oysa o insanlar sizi terk etmemiştir; onların doğası "seyrek" gelmektir. Onların alışverişleri arasındaki "sessizlik", ölüm değil, onların normalidir. Bir modelin başarılı olması için, bu "sessizliği" okuyabilmesi gerekir. Müşteri sessiz kaldığında kendine şu soruyu sormalıdır: "Bu adamın geçmiş alışkanlıklarına göre bu sessizlik normal mi, yoksa şüpheli mi?"</p>
+<h3>1.2. Ortalamaya Dönüş (Regression to the Mean)</h3>
+<p>Bu kural, evrendeki her şeyin uç noktalardan (ekstrem durumlardan) zamanla genel ortalamaya doğru geri çekileceğini söyler.
+Çok basit bir örnek düşünelim: Bir basketbol oyuncusu normalde maç başına 15 sayı atıyor. Ancak hayatının en iyi maçını oynadı ve o gün 50 sayı attı. Eğer koç bu 50 sayıyı görüp, "Vay canına, bu adam artık hep 50 sayı atacak" diyerek ona süperstar sözleşmesi verirse, kulübü batırır. Çünkü o 50 sayı, oyuncunun gerçek potansiyeli değil, şansın ve ekstrem koşulların birleşimidir. Oyuncu bir sonraki maçta büyük ihtimalle yine 15 sayısına geri dönecektir.</p>
+<p>Aynı şey müşteri için de geçerlidir. Bir müşteri, normalde yılda 1 kez sizden ürün alıyordur. Ancak o yıl evleniyordur ve çeyiz dizmek için üst üste 10 kere gelip alışveriş yapmıştır. Şirket algoritması bu adamı "VIP, harika müşteri!" olarak etiketler ve gelecek yıl ondan yine 10 alışveriş bekler. Oysa adam evlenmiş bitmiştir, artık yine yılda 1 alışverişe (yani kendi ortalamasına) geri dönecektir. Şirketin bütçesi ve beklentileri tamamen çöker.
+Bu yüzden geleceği tahmin eden bir model, müşterinin o anki "çılgın" davranışlarına aldanmamalı, onu kendi doğasındaki ortalamaya doğru "geri çekecek" bir fren mekanizmasına sahip olmalıdır. İşte Bayesyen modeller tam olarak bu fren mekanizmasıdır.</p>
+<h2>BÖLÜM 2: Bayesyen İstatistik - Modellerin Zeka Kaynağı</h2>
+<p>Yukarıda bahsettiğimiz "ortalamaya dönüş" olayını bilgisayara nasıl yaptıracağız? Bunun cevabı Bayesyen İstatistiktir. Anlaması inanılmaz zevkli bir konudur çünkü insan beyni zaten tam olarak böyle çalışır.</p>
+<h3>2.1. Klasik İstatistik vs. Bayesyen İstatistik</h3>
+<p>Klasik istatistik der ki: "Gerçeklik tektir ve mutlaktır." Elinde 1 günlük veri varsa, o 1 günlük veriye bakarak kesin bir yargıya varır. 
+Bayesyen istatistik ise şöyle der: "Ben gerçeği asla kesin olarak bilemem. Ben sadece ihtimallere inanırım. Yeni bir kanıt (veri) gördüğümde, inandığım ihtimalleri usulca güncellerim."</p>
+<h3>2.2. Prior, Likelihood ve Posterior (Kutsal Üçlü)</h3>
+<p>Diyelim ki bir odadasınız ve içeri tanımadığınız biri girdi. Bu kişinin boyu hakkında tahminde bulunacaksınız.
+1. <strong>Prior (Önsel İnanç):</strong> Henüz adamı görmediniz (gözünüz kapalı). Ancak Türkiye'de erkeklerin yaş ortalamasının 1.75 civarında olduğunu biliyorsunuz. Adamı görmeden önceki tahmininiz (inancınız) şudur: "Bu adam büyük ihtimalle 1.70 ile 1.80 arasındadır." İşte bir müşteri kapıdan ilk girdiğinde, modelin de yaptığı budur. Müşteriyi tanımadığı için onu "tüm müşterilerin genel ortalaması" (Prior) olarak kabul eder.
+2. <strong>Likelihood (Olabilirlik - Yeni Kanıt):</strong> Gözünüzü açtınız ve adamın kafasının kapı pervazına değdiğini gördünüz! (Yeni veri geldi).
+3. <strong>Posterior (Sonsal - Güncellenmiş İnanç):</strong> Eski inancınızla (Türkiye ortalaması), yeni kanıtı (kapıya değen kafa) birleştirirsiniz. Yeni tahmininiz: "Tamam, bu adam ortalama biri değil, bu adam kesinlikle 1.95 civarında." (İnancınızı güncellediniz).</p>
+<h3>2.3. Büzülme Etkisi (Shrinkage) - İşin Sırrı</h3>
+<p>Müşteri Yaşam Boyu Değeri (CLV) hesaplarken Bayesyen mantık neden kusursuzdur? Şundan dolayı:
+Eğer bir müşteri mağazaya yeni gelmişse (elimizde sadece 1 haftalık verisi varsa), model bu veriye <em>güvenmez</em>. Müşterinin o 1 haftalık davranışını alır ve onu <strong>Genel Müşteri Ortalamasına (Prior)</strong> doğru güçlü bir şekilde geri çeker (büzer). "Sen daha yenisin, o kadar harcadığına bakma, ben seni şimdilik ortalama bir vatandaş sayıyorum" der.
+Ancak müşteri 5 yıldır sizinle çalışıyorsa, model artık Prior'u (genel ortalamayı) tamamen umursamamaya başlar. "Bu adamı 5 yıldır tanıyorum, bunun kim olduğunu biliyorum, ortalamayla işim yok, sadece bu adamın kendi verisine güveneceğim" der.
+Bu inanılmaz derecede zekice bir yöntemdir ve bizi "Ortalamaya Dönüş" tuzaklarından tamamen kurtarır.</p>
+<h2>BÖLÜM 3: Pareto/NBD Modeli - Sürekli Zamanın Kralı</h2>
+<p>E-ticaret siteleri (Amazon vb.), havayolları veya kredi kartı işlemleri "Sürekli Zamanlı" (Continuous-Time) işlerdir. Müşteri yılın 365 günü, günün 24 saati dilediği bir saniyede girip alışveriş yapabilir. Müşteriyi kısıtlayan bir "fırsat penceresi" yoktur.
+İşte Pareto/NBD modeli, bu sürekli zaman denizinde müşterinin hareketlerini tahmin etmek için 1987'de yaratılmış devrimsel bir modeldir. Modeli adım adım, iç organlarına kadar inceleyelim.</p>
+<p>Bu model, her müşterinin beyninin içine iki farklı mekanizma (iki farklı canavar) yerleştirir. Bu mekanizmalar birbirinden tamamen bağımsız çalışır.</p>
+<h3>3.1. Birinci Mekanizma: İçimizdeki Alışveriş Canavarı (Poisson Süreci)</h3>
+<p>Müşteri "hayatta" (aktif) olduğu sürece, içindeki alışveriş canavarı belirli bir hızda uyanır ve müşteriye "hadi alışveriş yapalım" der. 
+Bu canavarın uyanma şekli istatistikte <strong>Poisson Süreci</strong> olarak adlandırılır. Poisson sürecinin en büyük özelliği "Hafızasız (Memoryless)" olmasıdır. 
+Hafızasızlık şudur: Bir müşteri dün alışveriş yaptıysa, bugün alışveriş yapma ihtimali düşmez veya artmaz. Zar atmak gibidir. Zarı 5 kere attınız hepsi 6 geldi. 6. atışınızda tekrar 6 gelme ihtimali yine 1/6'dır, zar geçmişi hatırlamaz. 
+İşte alışveriş canavarı da böyledir. Her an rastgele tetiklenebilir.</p>
+<p>Bu canavarın bir "hızı" vardır, buna <strong>Lambda ($\lambda$)</strong> denir.
+- Ahmet'in canavarı çok hiperaktiftir, lambdası yüksektir (örneğin ayda 10 kez tetiklenir).
+- Ayşe'nin canavarı çok tembeldir, lambdası düşüktür (yılda 1 kez tetiklenir).</p>
+<p>Model, Ahmet ve Ayşe'nin geçmiş alışveriş sıklıklarına bakarak, Bayesyen yöntemle herkesin kendi gizli $\lambda$ hızını tahmin etmeye çalışır.</p>
+<h3>3.2. İkinci Mekanizma: Ölüm Perisi (Üstel Dağılım)</h3>
+<p>Müşterinin içinde bir de "Kırılma / Ölüm Perisi" vardır. Sözleşmesiz (non-contractual) bir dünyada olduğumuz için müşteri bizi terk ettiğinde bizi arayıp "ben gidiyorum" demez. Sadece sessizce ortadan kaybolur.
+Bu perinin ne zaman geleceği tamamen rastgeledir ve <strong>Üstel Dağılım (Exponential Distribution)</strong> ile modellenir. Bu süreç de hafızasızdır. Müşteri 5 yıldır sizden alışveriş yapıyor diye, yarın sizi terk etme ihtimali "düşük" diyemeyiz. Her an, sabit bir tehlike altındadır.
+Bu perinin gelme hızına <strong>Mu ($\mu$)</strong> denir. 
+Eğer bir müşterinin $\mu$ değeri yüksekse, o müşteri firmadan çabuk bıkma eğilimindedir. Eğer $\mu$ değeri düşükse, o müşteri çok sadıktır, perinin gelmesi çok uzun yıllar alabilir.</p>
+<h3>3.3. Heterojenlik (Farklılık) ve Gamma Dağılımı</h3>
+<p>Peki model neden sadece Poisson ve Üstel deyip bırakmıyor da "NBD (Negatif Binom Dağılımı)" ve "Pareto" gibi terimler kullanıyor?
+Çünkü dünyadaki herkesin alışveriş hızı ($\lambda$) ve ölüm hızı ($\mu$) aynı değildir. İnsanlar inanılmaz derecede farklıdır (Heterojenlik).
+Model bu farklılıkları kontrol altında tutmak için, tüm $\lambda$'ların ve tüm $\mu$'lerin popülasyonda bir <strong>Gamma Dağılımı</strong> izlediğini varsayar. 
+Matematiksel olarak bir Poisson süreci ile bir Gamma dağılımını çarpıştırırsanız (Bayesyen olarak birleştirirseniz), ortaya <strong>Negatif Binom Dağılımı (NBD)</strong> çıkar. 
+Üstel dağılım ile Gamma dağılımını çarpıştırırsanız, ortaya <strong>Pareto</strong> dağılımı çıkar. Modelin adı bu yüzden Pareto/NBD'dir.</p>
+<h3>3.4. Sistemin Çalışma Mantığı ve "Hayatta Kalma Olasılığı - P(Alive)"</h3>
+<p>Şimdi iki mekanizmayı birleştirelim. Müşteri kapıdan girdi, alışveriş canavarı ($\lambda$) sürekli tetikleniyor, alışverişler tık tık tık düşüyor. Ama arka planda Ölüm Perisi ($\mu$) de pusuda bekliyor. Bir gün Ölüm Perisi müşteriye dokunuyor ve müşteri "ölüyor". Artık alışveriş canavarı sonsuza dek susuyor.
+Ancak şirket olarak BİZ ölüm perisinin geldiğini görmüyoruz. Biz sadece müşterinin "sessizleştiğini" görüyoruz.</p>
+<p>Modelin çözmeye çalıştığı tek büyük soru şudur: <strong>"Bu sessizlik, müşterinin alışveriş canavarı tembel olduğu için mi, yoksa ölüm perisi geldiği için mi?"</strong></p>
+<p><strong>İşte devasa Paradoks:</strong>
+- Müşteri X: 2 yılda <strong>10 kere</strong> gelmiş. Son 1 yıldır yok.
+- Müşteri Y: 2 yılda <strong>1 kere</strong> gelmiş. Son 1 yıldır yok.</p>
+<p>Model, Müşteri X'in $\lambda$ hızının çok yüksek olduğunu hesaplar. "Bu adamın canavarı çok hızlıydı. Normalde her ay gelmesi lazımdı. Ama 1 yıldır hiç gelmediyse, alışveriş canavarının 1 yıl boyunca tesadüfen susmuş olma ihtimali milyarda birdir. Demek ki <strong>Ölüm Perisi kesinlikle geldi.</strong> Müşteri X öldü! (P(Alive) = %1)".</p>
+<p>Model, Müşteri Y'ye bakar. "Bu adamın canavarı zaten yılda 1 kere uyanıyordu. 1 yıl sessiz kalması tamamen doğasına uygun. Ölüm perisinin gelmiş olma ihtimali düşük. Müşteri Y kesinlikle hayatta! (P(Alive) = %90)".</p>
+<p>İşte şirketlerin RFM analizleriyle yaptıkları "Çok işlem yapan daha değerlidir, X müşterisine odaklanalım" hatası burada çöker. Pareto/NBD modeli, sessizliğin anlamını müşterinin kişisel frekansına göre yorumlar.</p>
+<h2>BÖLÜM 4: BG/NBD Modeli - Pareto'nun Kolaylaştırılmış ve Mantıklı Hali</h2>
+<p>Pareto/NBD modeli efsanevidir ancak matematiği (içindeki Gauss Hipergeometrik fonksiyonları yüzünden) o kadar ağırdır ki, eskiden süper bilgisayarlar bile haftalarca hesap yapardı.
+Daha da önemlisi, felsefi bir eksikliği vardı: Ölüm perisi, müşteri gece uyurken durduk yere gelir mi? Müşteri durduk yere "ben artık Trendyol'dan alışveriş yapmayacağım" demez. Bir olay yaşaması gerekir.</p>
+<p>Bunu fark eden araştırmacılar <strong>BG/NBD (Beta-Geometric / NBD)</strong> modelini yarattılar. Bu modelin matematiği o kadar basittir ki Excel'de bile çözülebilir. Peki neyi değiştirdiler?</p>
+<h3>4.1. Kasada Atılan Bozuk Para (Beta-Geometric Ölüm)</h3>
+<p>Alışveriş canavarı (Poisson) aynen duruyor. İnsanlar yine rastgele zamanlarda mağazaya gelip alışveriş yapıyorlar. 
+Ancak "Ölüm Perisi"nin çalışma şekli tamamen değiştirildi. BG/NBD modeli der ki: <strong>Müşteri sadece ve sadece bir işlem yaptıktan HEMEN SONRA sistemi terk edip etmemeye karar verir.</strong></p>
+<p>Şöyle düşünün:
+Müşteri mağazanıza geldi, ürününü seçti, kasaya gitti, parasını ödedi ve fişini aldı. Hizmetten memnun kalıp kalmadığını değerlendiriyor.
+Tam o an, zihninde hileli bir bozuk para atıyor. (Buna Bernoulli denemesi denir).
+- Para <strong>TURA</strong> gelirse (p olasılığı ile): "Bu mağaza iğrenç, kasiyer çok kabaydı, ürün de defolu, bir daha asla buraya adım atmayacağım!" der ve sistemi sonsuza dek terk eder (Ölüm gerçekleşir).
+- Para <strong>YAZI</strong> gelirse (1-p olasılığı ile): "Her şey yolunda, bir dahaki sefere yine gelirim" der ve hayatta kalmaya devam eder.</p>
+<h3>4.2. Modelin Mekaniği</h3>
+<p>Müşteri her alışveriş yaptığında bu bozuk parayı tekrar tekrar atar. Müşterinin kurumu terk etmeden (TURA gelmeden) önce kaç kere YAZI atacağı (kaç kere alışveriş yapmaya devam edeceği), istatistikte <strong>Geometrik Dağılım</strong> olarak bilinir. 
+Heterojenliği (müşteriler arasındaki farklılıkları) hesaba katmak için, herkesin bozuk parasındaki hile oranının (p) farklı olduğunu varsayarlar. Kimi müşterinin bozuk parası %90 tura gelmeye (ayrılmaya) meyillidir, kimi müşterinin bozuk parası %1 tura gelmeye meyillidir. Bu farklılıklar <strong>Beta Dağılımı</strong> ile modellenir. </p>
+<p>BG/NBD modeli, Pareto/NBD ile aynı başarıyı (hatta bazen daha iyisini) yakalar, çünkü insanların "durduk yere" değil, "deneyimledikçe" (işlem anında) ayrılma kararı alması insan psikolojisine çok daha uygundur.</p>
+<h2>BÖLÜM 5: BG/BB Modeli - Kesikli Zaman ve "Fırsat" Kavramı</h2>
+<p>Buraya kadar anlattığımız modeller e-ticaret, süpermarket gibi müşterinin 7/24 gelebildiği yerler içindi. Peki ya sizin iş modeliniz böyle değilse?
+Örneğin:
+- Yılda sadece 1 kez Ramazan ayında bağış mektubu gönderen bir yardım kuruluşu.
+- Sadece ayda 1 kez basılıp bayilere gönderilen bir akademik dergi.
+- Sadece Pazar sabahları kurulan antika pazarı.</p>
+<p>Bu sistemlerde müşteri "Salı gecesi saat 3'te" dergi alamaz veya bağış yapamaz. Sizin ona bir "Fırsat" (Opportunity) sunmanızı beklemek zorundadır. Zaman su gibi akmaz, kesik kesik ilerler (1. ay, 2. ay, 3. ay...). Buna <strong>Kesikli Zaman (Discrete Time)</strong> denir.</p>
+<h3>5.1. Cebimizdeki İki Zar</h3>
+<p>Kesikli zamanlarda müşterilerin karar alma mekanizması için tasarlanan en mükemmel model <strong>BG/BB (Beta-Geometric / Beta-Binomial)</strong> modelidir.</p>
+<p>Bu modelde müşterinin cebinde iki tane bozuk para (veya zar) vardır. Fırsat (örneğin ayın 1'i gelip yeni dergi çıktığında) kapıyı çaldığında müşteri şu iki zarı atar:</p>
+<p><strong>1. Zar: Ölüm Zarı (Theta - $  heta$)</strong>
+Müşteri önce bu zarı atar. Bu zar, müşterinin "Artık ben bu dergiyi okumaktan sıkıldım, bu kurumu hayatımdan çıkarayım mı?" kararını verir. 
+Eğer zar "ÖL" gelirse, müşteri sizin sisteminizden tamamen silinir. Bir daha asla dergi almaz. Eğer zar "YAŞA" gelirse, müşteri o an için sizin sisteminizde kalmaya karar vermiştir. (Terk etme anı Geometrik dağılım izler).</p>
+<p><strong>2. Zar: Satın Alma Zarı (P)</strong>
+Diyelim ki müşteri Ölüm zarında "YAŞA" attı. Yani kurumu henüz terk etmedi. Şimdi ikinci zarı atar: "Peki bu ayki sayıyı alacak mıyım?"
+Eğer zar "AL" gelirse, gider dergiyi alır. Eğer zar "ALMA" gelirse, dergiyi almaz (O ayı pas geçer). Ama ölmemiştir! Gelecek ay dergi çıktığında yine önce ölüm zarını, sonra satın alma zarını atacaktır. (Bu eylemler Binom dağılımı izler).</p>
+<h3>5.2. Gizli Gerçeği Tahmin Etmek</h3>
+<p>Siz şirket olarak müşterinin zarlarını görmezsiniz. Sadece sonucu görürsünüz.
+Diyelim ki bir müşteri 5 aydır dergi almıyor. (0, 0, 0, 0, 0).
+Model sorar: "Bu adam 1. ayın başında Ölüm zarında 'ÖL' attığı için mi 5 aydır dergi almıyor, yoksa hala hayatta ama her ay Satın Alma zarında şans eseri 'ALMA' attığı için mi?"
+Model, tüm popülasyonun verisine Bayesyen mantıkla bakarak bu zarların hile oranlarını (Beta dağılımlarını) çözer. BG/BB modeli, bağış kampanyaları ve katalog taşımacılığında dünyadaki en başarılı algoritmadır.</p>
+<h2>BÖLÜM 6: sBG Modeli - Abonelik Dünyası ve "Düzleşen Eğriler"</h2>
+<p>Buraya kadar müşterinin istediği zaman sessizce gidebildiği "sözleşmesiz" ortamlardan bahsettik. Peki ya <strong>Sözleşmeli (Contractual)</strong> bir dünyadaysanız? Yani Netflix, Spotify aboneliği veya Spor Salonu üyeliği satıyorsanız?
+Burada "müşteri öldü mü acaba?" diye tahmin etmenize gerek yoktur. Müşteri "İptal Et" tuşuna bastığı an, sistemden çıktığını kesin olarak bilirsiniz.</p>
+<h3>6.1. Düzleşen Hayatta Kalma Eğrileri (Flattening Retention Curves)</h3>
+<p>Abonelik sistemlerinde şirketleri dehşete düşüren bir olay vardır. Bir kampanya yaparsınız, 10.000 kişi abone olur.
+- 1. Ayın sonunda: 3.000 kişi iptal eder (%30 Churn).
+- Yönetici panikler: "Eyvah, her ay %30 müşteri kaybedersek 3-4 aya kimse kalmayacak!"</p>
+<p>Ancak ilginç bir şey olur:
+- 2. Ayın sonunda: Sadece 1.500 kişi iptal eder.
+- 6. Ayın sonunda: İptal edenlerin sayısı ayda 100 kişiye kadar düşer. Eğri aniden düzleşir ve sabitlenir. Neden?</p>
+<h3>6.2. Neden Düzleşir? (Shifted Beta-Geometric - sBG Modeli)</h3>
+<p>sBG modeli bunun nedenini istatistiksel olarak kanıtlar. İnsanların hepsi aynı değildir (Heterojenlik). Kampanya ile gelen 10.000 kişinin bir kısmı "hevesliler" (yüksek churn ihtimali olanlar), diğer kısmı ise "sadıklar"dır (düşük churn ihtimali olanlar).</p>
+<p>İlk 1-2 ayda o "hevesliler" hizmeti dener, sevmez ve hızla iptal ederler. Kötü elmalar sepetten çok hızlı ayıklanır. Hevesliler sistemden çıkıp gittikçe, havuzun içinde sadece "sadık" çekirdek kitle kalmaya başlar. Sadık kitlenin sistemi terk etme ihtimali zaten doğası gereği çok düşük olduğu için, aylar geçtikçe iptal oranları dramatik bir şekilde düşer. 
+sBG modeli, bu heterojenliği <strong>Beta dağılımı</strong> ile hesaplayarak, yöneticilere <em>"Korkma, 12 ay sonra elinde kaç kişi kalacağını sana tam olarak söyleyebilirim"</em> der ve o düzleşen eğrinin matematiğini çizer.</p>
+<h2>BÖLÜM 7: RFM vs CLV (İzo-Değer Eğrileri ve Dev Paradoks)</h2>
+<p>Geleneksel şirketler müşterilerini <strong>RFM (Recency - Yenilik, Frequency - Sıklık, Monetary - Parasal Değer)</strong> skoruyla analiz eder.
+- <strong>Yenilik (Recency):</strong> Müşteri en son ne zaman geldi? (Dün gelen, 1 yıl önce gelenden iyidir).
+- <strong>Sıklık (Frequency):</strong> Müşteri kaç kere geldi? (10 kere gelen, 1 kere gelenden iyidir).</p>
+<p>Şimdi RFM'e göre çok mantıklı gelen ama CLV (Olasılık Modelleri) dünyasında büyük bir hata olan şu "Paradoksu" inceleyelim. İzo-değer eğrileri (aynı CLV değerine sahip müşterilerin oluşturduğu eğriler) bize şunu kanıtlar:</p>
+<p><strong>Paradoks:</strong> "Çok sık gelen (Yüksek Frekanslı) bir müşterinin uzun süredir ortada görünmemesi (Düşük Yenilik), az gelen bir müşterinin görünmemesinden çok daha tehlikelidir!"</p>
+<p><strong>Mala Anlatır Gibi Örnek:</strong>
+İki arkadaşınız var. 
+- <strong>Can:</strong> Sizi <strong>her gün</strong> arayan çok samimi bir dostunuz. (Yüksek Sıklık).
+- <strong>Emre:</strong> Sizi sadece <strong>yılda bir kez</strong> doğum gününüzde arayan eski bir okul arkadaşınız. (Düşük Sıklık).</p>
+<p>Şimdi, ikisi de sizi <strong>6 aydır</strong> hiç aramadı (İkisi için de Yenilik - Recency süresi 6 ay).
+RFM der ki: "Can seni eskiden çok arıyordu (Sıklığı 300), Emre az arıyordu (Sıklığı 1). İkisi de 6 aydır aramıyor. Can kesinlikle daha değerlidir, git Can'ı kurtar."</p>
+<p>Oysa Olasılık Modeli (CLV) der ki: "Sen deli misin? Emre'nin seni 6 aydır aramaması çok normal, adam zaten yılda 1 arıyordu. Emre hala senin dostun (Hayatta kalma ihtimali %99). 
+Ama Can seni her gün ararken birden 6 ay boyunca sessizleştiyse, <strong>Can'ın başına kesin bir iş gelmiştir veya sana küsmüştür!</strong> (Can'ın hayatta kalma ihtimali %1). Can çoktan ölmüştür, onu geri kazanamazsın, boşa para harcama."</p>
+<p>İşte İzo-Değer eğrileri, RFM matrisini paramparça eder. Frekans arttıkça, kısa bir sessizliğin "ölüm (churn) sinyali" olma şiddeti katlanarak artar.</p>
+<h2>BÖLÜM 8: Yaşam Çözümlemesi, Cox Tehlikesi ve Sansürleme</h2>
+<p>Önceki modeller sadece müşterinin "alışveriş geçmişine" bakıyordu. Peki ya müşterinin evlenmesi, maaşının artması, mobil uygulamanızı silmesi gibi faktörler (kovaryatlar) müşterinin ölüm tehlikesini nasıl etkiliyor? Bunu tıp dünyasından ödünç aldığımız <strong>Yaşam Çözümlemesi (Survival Analysis)</strong> ile buluruz.</p>
+<h3>8.1. Sağdan Sansürleme (Right Censoring): Ölmemiş Adamı Gömme</h3>
+<p>Tıp dünyasında bir kanser ilacını test ediyorsunuz. 5 yıl boyunca hastaları izlediniz. Bazıları vefat etti (Ömürlerini kesin biliyoruz). Ancak 5. yılın sonunda hala yaşayan hastalar var! 
+Eğer bu yaşayan hastaları veri setinden atarsanız, ilaç insanları hemen öldürüyor gibi görünür (yanlı ve karamsar sonuç). Bu hastalar zaman çizelgesinin sağından "sansürlenmiştir" (Gelecekte ne zaman öleceklerini bilmiyoruz, sadece en az 5 yıl yaşadıklarını biliyoruz).</p>
+<p>Banka müşterilerinde de aynıdır. 10 yıllık bir banka müşterisi hala aktifse, bu "sağdan sansürlü" veridir. Onu veri setinden atamazsınız; "en az 10 yıl sadık kaldı" bilgisini matematiğe yedirmeniz gerekir.</p>
+<h3>8.2. Cox Orantısal Tehlike (Proportional Hazard) Modeli</h3>
+<p>Cox modeli, müşterinin tehlikesini (churn olma riskini) arabanın hız göstergesi gibi hesaplar.
+Bir "Temel Tehlikeniz" (Baseline Hazard) vardır. Üzerine bir de hayatınızdaki olaylar (gaza basma) eklenir.</p>
+<p><strong>Örnek (İkincil Banka Sendromu):</strong>
+Bankalar genelde "müşteriye ne kadar çok farklı kredi/kart satarsam o kadar iyi" der. Cox modeliyle analiz yapıldığında şu gerçeği görürsünüz:
+Müşteri genelde sizi "Yedek Banka" olarak kullanıyordur. Eğer eğitim düzeyi yüksekse, sizi yedek banka olarak tutma konusunda çok bilinçlidir, bu yüzden durduk yere hesabını kapatmaz (eğitim arttıkça churn düşer).
+Ancak müşteri sizden "otomatik fatura ödeme" talimatı verirse, hız göstergesindeki "Tehlike" (Hazard) ibresi anında dibe vurur. Müşterinin sizi terk etme ihtimali %90 azalır. Cox modeli, hangi hareketlerin tehlikeyi artırdığını anlık olarak okuyan bir radar sistemidir.</p>
+<h2>BÖLÜM 9: Derin Öğrenme (Deep Learning) ile Churn Tahmini</h2>
+<p>Yukarıdaki olasılık modelleri harikadır ama bir eksikleri vardır: Sadece toplam rakamlara bakarlar. "Ahmet 10 kere ekmek aldı" derler. Ancak modern <strong>Derin Öğrenme</strong> (özellikle RNN ve LSTM gibi yapay sinir ağları) der ki: <strong>"Hangi sırayla aldığı önemlidir!"</strong></p>
+<h3>9.1. Alışveriş Fişini Şiir Gibi Okumak (Sequential Framework)</h3>
+<p>ChatGPT'nin nasıl çalıştığını düşünün. Bir cümleyi okurken kelimelerin sırasına bakar. "Bugün hava çok..." dediğinizde arkasından "güzel" geleceğini tahmin eder.
+Derin öğrenme algoritmaları, müşterilerin alışveriş sepetlerini ardışık bir cümle gibi okur. </p>
+<p><strong>Örnek:</strong>
+Ahmet 6 ay boyunca sırasıyla şunları almıştır:
+<code>[Süt -&gt; Cips -&gt; Kola]</code>, <code>[Süt -&gt; Cips -&gt; Bira]</code>, <code>[Süt -&gt; Cips -&gt; Kola]</code>
+Sonraki ay Ahmet'in sepeti şöyle değişir:
+<code>[Bebek bezi -&gt; Islak Mendil -&gt; Bebek maması]</code></p>
+<p>Geleneksel modeller (RFM vs.) buna bakar ve sadece "Ahmet yine 3 parça ürün almış, harcadığı para aynı, Ahmet aynı Ahmet" der.
+Ancak Derin Öğrenme algoritması dizilimi okur: "Ahmet'in hayatında devasa bir olay oldu (Çocuğu oldu!). Ahmet'in alışkanlıkları ve ihtiyaçları tamamen değişti. Ahmet artık farklı bir segmentte, eğer ona eskisi gibi cips reklamı gösterirsek onu kaybederiz!"
+Derin öğrenme, alışverişlerin ardışık (sequential) dizilimine bakarak, müşterinin hayatındaki duygu durumunu ve gizli krizleri (churn sinyallerini) daha o karar vermeden aylar önce yakalayabilen bir dedektiftir.</p>
+<h2>BÖLÜM 10: PU Learning - "Seni Terk Ettim" Demeyenleri Bulmak</h2>
+<p>E-ticaret siteleri veya perakende (sözleşmesiz) sektörlerdeki en büyük kanser şudur: <strong>Sizi terk eden kişi, size terk ettiğini söylemez.</strong> Hesabı orada durur, uygulaması telefonda durur ama asla açmaz.</p>
+<p>Siz yapay zeka (Makine öğrenmesi) modeli kurarken şöyle bir veri hazırlarsınız:
+- <strong>Kötüler (Churn olanlar):</strong> Hesabını silen, üyeliğini iptal edenler.
+- <strong>İyiler (Aktif kalanlar):</strong> Hesabını silmeyen herkes.</p>
+<p>Bu <strong>korkunç bir hatadır!</strong> Çünkü "Hesabını silmeyen herkes" iyi müşteri değildir! Uygulamayı silmeyi unutan ama aslında 2 yıldır girmeyen adamı yapay zekaya "iyi müşteri" olarak öğretirseniz, yapay zeka kafayı yer ve çöker.</p>
+<h3>10.1. Positive-Unlabeled (PU) Learning Nedir?</h3>
+<p>İşte burada PU Learning kurtarıcı olarak gelir. PU Learning der ki:
+"Elimde sadece iki tür insan var:
+1. <strong>Pozitifler (P):</strong> Kesinlikle öldüğünü bildiklerim (Arayıp iptal edenler). Bunlar net.
+2. <strong>Etiketlenmemişler (U - Unlabeled):</strong> Geri kalan o devasa kalabalık. Bunların içinde gerçek sadık müşteriler de var, ölmüş ama mezara girmemiş zombiler (sessiz churn'ler) de var."</p>
+<p><strong>Nasıl Çalışır? (Casusluk Yöntemi)</strong>
+PU Learning algoritması önce o kesin "Pozitiflerin (P)" özelliklerini, alışkanlıklarını, ayak izlerini öğrenir. (Örneğin iptal etmeden önce uygulamaya girme sıklıkları nasıl düşmüş?).
+Sonra bu öğrendiği şablonu alır, o devasa "Etiketlenmemişler (U)" kalabalığının içine bir casus gibi dalar. Kalabalığın içindeki insanları tek tek tarar ve şunu der: "Sen hesabını kapatmamışsın ama ayak izlerin ve davranışların o ölenlere çok benziyor. Sen aslında bir zombisin! Seni 'aktif' listesinden çıkartıyorum."
+Bu sayede, sözleşmesiz ortamlarda sessizce kaybedilen müşterileri devasa bir doğrulukla bulup çıkartır.</p>
+<h2>BÖLÜM 11: Modellerin Makine Dairesi - MCMC ve Monte Carlo</h2>
+<p>Elimizde harika felsefeler ve denklemler var ama bilgisayar bu sonsuz ihtimalleri (integralleri) nasıl hesaplıyor?</p>
+<h3>11.1. Monte Carlo Simülasyonu: İntegral Çözemiyorsan Zar At!</h3>
+<p>Bir odanın alanını hesaplamak istiyorsunuz ama oda yamuk yumuk, matematiksel bir formülü yok. Ne yaparsınız? Odanın tabanına 100.000 tane rastgele dart oku atarsınız. Okların düştüğü yerlere bakarak odanın alanını çok yüksek bir kesinlikle tahmin edersiniz. 
+İşte karmaşık matematiksel integraller de (müşterinin gelecekteki ihtimalleri vb.) böyle çözülür. Bilgisayar denklemi çözmeye çalışmaz, 100.000 kere rastgele zar atar (simülasyon yapar) ve ortalamasını alır. Büyük Sayılar Yasası sayesinde bu ortalama her zaman gerçek matematiksel sonuca eşittir!</p>
+<h3>11.2. MCMC (Markov Chain Monte Carlo) ve Gibbs Sampling</h3>
+<p>Diyelim ki zifiri karanlık devasa bir odadasınız. Amacınız odanın en yüksek tepe noktasını (en doğru parametreyi) bulmak. Odanın haritasını (formülünü) bilmiyorsunuz. Ne yaparsınız?</p>
+<p><strong>Metropolis-Hastings (MCMC):</strong>
+1. Karanlıkta rastgele bir yöne bir adım atarsınız.
+2. Ayak ucunuzla yeri kontrol edersiniz. Eğer bastığınız yer, bir önceki yerinizden "daha yüksekse" (veriye daha uygunsa), orada kalırsınız.
+3. Eğer bastığınız yer "daha alçaksa", orayı hemen reddetmezsiniz. (Çünkü belki o anlık bir çukurdur, ilerisi daha büyük bir tepedir). Belli bir ihtimalle aşağı inmeyi de kabul edersiniz.
+Bunu bilgisayara saniyede 10.000 kere yaptırırsınız. Bilgisayarın karanlıkta attığı ayak izleri, bir süre sonra odanın tam bir 3D haritasını çıkartır! En çok vakit geçirdiği yer, aradığımız en doğru çözümdür.</p>
+<p><strong>Gibbs Sampling (Boyutluluk Lanetinden Kurtuluş):</strong>
+Eğer oda 3 boyutlu değil de, (Hiyerarşik modellerdeki gibi) 100.000 boyutluysa, rastgele adım atmak imkansızlaşır. Gibbs Sampling, "aynı anda tüm yönlere adım atmaya çalışma" der. "Önce sadece Doğu-Batı ekseninde en iyi yeri bul, diğer her şeyi sabitle. Sonra Kuzey-Güney ekseninde bul." Her parametreyi tek tek güncelleyerek 100.000 boyutlu inanılmaz zor problemleri (milyonlarca müşterinin kendine has hızlarını tahmin etmeyi) çocuk oyuncağına çevirir.</p>
+<h3>11.3. Hiyerarşik Bayes (Patron - Müdür - İşçi)</h3>
+<p>Eğer tüm müşterileri tek bir kefeye koyarsanız (sadece Prior), bireysel farklılıkları eklersiniz. Eğer her müşteriyi tamamen bağımsız incelerseniz, yeterli verisi olmayanlarda çuvallarsınız.
+Hiyerarşik Bayes, dünyayı katmanlı modellediğimiz yerdir:
+- <strong>Patron (Ana Dağılım - Hyperparameter):</strong> Tüm müşterilerin genel huyu suyu.
+- <strong>Müdür (Segment Dağılımı):</strong> Sadece "B2B Kurumsal Müşterilerin" huyu suyu.
+- <strong>İşçi (Birey):</strong> Ahmet'in kendi huyu suyu.
+Ahmet hakkında veri yoksa, Müdür'ün huyuna göre davranır. Müdür hakkında veri yoksa Patron'a göre... Hiyerarşik Bayes, MCMC'nin gücüyle çözülen, günümüz veri biliminin ulaştığı en zarif ve güçlü modelleme sanatıdır.</p>
+<h2>BÖLÜM 12: Sonuç ve Büyük Çıkarımlar (The Grand Finale)</h2>
+<p>Buraya kadar dünyanın en gelişmiş olasılık modellerini, makine öğrenmesi algoritmalarını ve bunların perde arkasındaki hesaplama motorlarını (MCMC, Monte Carlo) inceledik. Bütün bu anlattıklarımızın temel amacı, şirketlerin en büyük varlığı olan "müşteriyi" karanlık bir mağarada el yordamıyla değil, projektör ışığı altında görebilmektir. </p>
+<p>Peki tüm bu destansı yolculuktan yöneticilerin ve veri bilimcilerin çıkarması gereken o "Büyük Dersler" nelerdir?</p>
+<h3>1. Kırmızı Çizgiler Şirketleri Kör Eder</h3>
+<p>İnsan davranışını statik kurallara (Örn: "6 aydır gelmeyen adam ölmüştür", "Senede 10.000 TL harcamayan değersizdir") hapsetmek, şirketinizi batırmaya giden en kısa yoldur. İnsanlar birer Excel tablosu değildir; hepsinin kendi doğası, kendi "seyrekliği" ve kendi "frekansı" vardır. Müşteriyi anlamak istiyorsanız, onun "ne zaman gelmediğine" değil, "kendi doğasına göre ne zaman gelmesinin beklendiğine" bakmak zorundasınız.</p>
+<h3>2. Çok Gelen Müşteri Her Zaman İyi Değildir</h3>
+<p>RFM paradoksunda anlattığımız gibi; her hafta sizinle iletişim kuran (Yüksek Frekanslı) bir müşterinin birden sessizleşmesi, alarm zillerinin çalması gereken bir yangın anıdır. O adamın sessizliği "ölüm" kokar. Ancak yılda bir kez gelen müşterinin 6 aylık sessizliği gayet huzurlu bir bekleyiştir. Yani, <em>sizi en çok seven müşterileri kaybettiğinizi anlamak, en zor şeydir.</em> Olasılık modelleri (Pareto/NBD vb.) bu sessizliğin anlamını çözen yegane fenerlerdir.</p>
+<h3>3. Çöpe Attığınız Veriler Aslında Altındır</h3>
+<p>Sağdan Sansürleme (Right Censoring) kuralını hatırlayın. "Bu müşterinin ne zaman öleceğini bilmiyorum, en iyisi bunu analize katmayayım" demek, sizi sadece ölmüş olan kötü müşterilerin verisine mahkum eder. Sizi yıllardır terk etmemiş olan o muazzam sadık kitleyi "henüz ölmedikleri için" görmezden gelirseniz, geleceği tahmin eden pusulanız kırılır. Yaşam Çözümlemesi algoritmaları bu yüzden her şirketin kalbinde olmalıdır.</p>
+<h3>4. Terk Etmek Sadece Bir Anlık Olay Değildir (Derin Öğrenme)</h3>
+<p>Müşteri durduk yere, yolda yürürken sizi terk etme kararı almaz. Bu karar, aylara yayılan bir "deneyim" silsilesinin sonucudur. Derin öğrenme ve sıralı (sequential) analizler bize gösterdi ki; müşterinin alışveriş fişlerindeki ufacık bir sıralama değişikliği (örneğin bebek bezi almaya başlaması), onun hayatındaki devasa bir krizin veya değişimin habercisidir. Eğer algoritmanız bu "şiiri" okuyamıyorsa, müşteri elinizden kayıp giderken sadece izlersiniz.</p>
+<h3>5. Zombileri Bulmak Sizin İşinizdir (PU Learning)</h3>
+<p>Sözleşmesiz (Non-contractual) perakende ve e-ticaret dünyasında müşteri size "Hadi eyvallah, ben gidiyorum" demez. Sadece uygulamanızı telefonun en arka sayfasına atar ve sessizce kaybolur. Veri tabanınızdaki "Aktif Müşteriler" listesinin yarısı aslında çoktan ölmüş olan "Zombilerdir". PU Learning gibi algoritmaları kullanıp bu zombileri bulamazsanız, pazarlama bütçenizin yarısını çoktan ölmüş insanlara reklam göstererek çöpe atarsınız.</p>
+<h3>Özetin Özeti</h3>
+<p>Veri bilimi, "Daha çok veri toplayalım" demek değildir. Veri bilimi; elimizdeki verinin arkasında yatan insan doğasını, şüpheci (Bayesyen) bir yaklaşımla, olayların ardışık sırasını okuyarak ve her insanın eşsiz (Heterojen) olduğunu kabul ederek matematiğe dökme sanatıdır. Eğer müşterinize bu saygıyla yaklaşırsanız, sadece onun ne zaman gideceğini değil, neye ihtiyacı olduğunu da herkesten önce bilirsiniz.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaggle Churn Veri Setleri Kapsamlı Analiz Rehberi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="doc-header">
+            <h1>Müşteri Kaybı (Customer Churn) Analizi: Ultimate Rehber</h1>
+            <p class="doc-subtitle">Sektörel Kaggle Veri Setleri, Keşifçi Veri Analizi (EDA) ve Özellik Mühendisliği Üzerine Dünyanın En Ayrıntılı Rehberi</p>
+            <div class="doc-meta">Telekomünikasyon • Bankacılık • E-Ticaret</div>
+        </div>
+
+        <h2>Giriş: Müşteri Kaybının (Churn) İş Dünyasındaki Kritik Rolü</h2>
+        <p>Gelişen rekabetçi iş dünyasında, yeni bir müşteri kazanmanın (Customer Acquisition Cost - CAC) maliyeti, mevcut bir müşteriyi elde tutmanın (Customer Retention) maliyetinden 5 ila 25 kat daha yüksektir. <strong>Müşteri Kaybı (Customer Churn)</strong>, bir müşterinin bir şirketle olan iş ilişkisini sonlandırması veya aboneliğini iptal etmesi durumudur. Dünyanın en büyük şirketleri, karlılıklarını artırmak için yeni müşteriler bulmaktan ziyade, "Arka kapıdan kaçan" müşterileri engellemeye çalışırlar.</p>
+        
+        <p>Bu devasa rehberde, Veri Bilimi topluluğunun en sık başvurduğu 3 farklı Kaggle Churn veri setini (Telco, Credit Card, E-commerce) mikroskobik düzeyde inceleyeceğiz. Her bir sektörün veri yapısını, iş mantığını (Business Logic), Kaggle platformundaki en iyi Notebook'larda uygulanan veri temizleme, özellik mühendisliği (Feature Engineering) ve makine öğrenmesi (Machine Learning) stratejilerini adım adım, hiçbir detayı atlamadan ele alacağız.</p>
+
+        <div class="callout">
+            <h4>💡 Sektörel Churn Karakteristikleri Arasındaki Uçurum</h4>
+            <p>Müşteri kaybının doğası sektöre göre kökten değişir. Başarılı bir veri bilimci bu dinamikleri anlamadan kod yazmaya başlamaz:</p>
+            <ul>
+                <li><strong>Abonelik Bazlı (Telekomünikasyon / SaaS):</strong> Müşteri şirketi arar ve "Ayrılıyorum" diyerek aboneliği iptal eder. Churn anidir ve nettir (Hard Churn). Önceden tahmin etmesi nispeten daha kolaydır çünkü sözleşme bitiş tarihleri bellidir.</li>
+                <li><strong>İşlem Bazlı (Bankacılık / Kredi Kartı):</strong> Müşteri kartını resmi olarak iptal etmeyebilir, ancak cüzdanının ücra bir köşesine atar ve harcama yapmayı bırakır. İşlem hacmi aylar içinde yavaş yavaş erir (Soft Churn). Sessiz ve tehlikelidir.</li>
+                <li><strong>Etkileşim Bazlı (E-Ticaret / Sosyal Medya):</strong> Müşterinin bir aboneliği yoktur. Uygulamayı telefonundan siler veya 6 ay boyunca sipariş vermez. Burada Churn, şirket tarafından "belirli bir süre inaktif olma" durumu olarak varsayımsal tanımlanır.</li>
+            </ul>
+        </div>
+
+        <hr style="margin: 50px 0; border: 1px solid #e2e8f0;">
+
+        <!-- ============================================== -->
+        <!-- BÖLÜM 1: TELCO CHURN                           -->
+        <!-- ============================================== -->
+        <h2>BÖLÜM 1: Telco Customer Churn (Telekomünikasyon)</h2>
+        <p>IBM tarafından oluşturulan bu ikonik veri seti (<code>blastchar/telco-customer-churn</code>), abonelik tabanlı müşteri kaybını anlamak için veri bilimcilerin "Hello World"üdür. 7043 müşteriyi ve onların demografik, hesap ve hizmet kullanımlarını içerir. Bu veri seti, doğrusal olmayan müşteri davranışlarını anlamak için mükemmel bir oyun alanıdır.</p>
+
+        <!-- YENİ EKLENEN KISIM: Problem ve Tahmin Hedefi -->
+        <div class="callout" style="background-color: #fdf6e3; border-left-color: #d97706;">
+            <h4 style="color: #b45309;">🎯 İş Problemi ve Tahmin Hedefi</h4>
+            <p><strong>Temsil Ettiği Problem:</strong> Abonelik bazlı hizmet veren telekom veya yazılım (SaaS) şirketlerinde, özellikle taahhütsüz veya sözleşmesi bitmek üzere olan müşterilerin rakiplere kaymasını engellemek.</p>
+            <p><strong>Modelin Tahmin Edeceği Şey:</strong> Girdiğimiz müşteri verilerine dayanarak, o müşterinin <em>önümüzdeki 30 gün içinde</em> hizmetini iptal edip etmeyeceğini (Churn = Yes/No) ikili (binary) olarak tahmin eder.</p>
+        </div>
+
+        <!-- YENİ EKLENEN KISIM: Avantaj / Dezavantaj Tablosu -->
+        <h3>Telco Veri Setinin Avantajları ve Dezavantajları</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="background-color: #276749;">Avantajlar (Pros)</th>
+                    <th style="background-color: #c53030;">Dezavantajlar (Cons)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Mükemmel derecede temizdir, neredeyse hiç NaN (eksik veri) içermez.</td>
+                    <td>Sınıf dengesizliği nispeten hafiftir (%26), bu yüzden aşırı zorlayıcı bir yanı yoktur.</td>
+                </tr>
+                <tr>
+                    <td>Abonelik bazlı sistemleri (Aydan aya ödeme) anlamak için en iyi temel örnektir.</td>
+                    <td>Özellik (feature) sayısı sadece 21'dir, karmaşık örüntüler (complex patterns) üretmeye imkan vermez.</td>
+                </tr>
+                <tr>
+                    <td>Kategorik değişkenlerin gücü sayesinde Açıklanabilirlik (Explainability) çok kolaydır.</td>
+                    <td>Günümüz modern Big Data'sındaki devasa işlem (transactional) boyutlarını yansıtmaz.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>1.1. Veri Sözlüğü (Data Dictionary)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Değişken İsmi</th>
+                    <th>Açıklama</th>
+                    <th>Türü</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>CustomerID</strong></td>
+                    <td>Müşterinin eşsiz kimlik numarası. Modelde kullanılamaz, hiçbir istatistiksel değeri yoktur, <em>düşürülmelidir (drop)</em>.</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Churn</strong> <span class="badge target">Hedef (Target)</span></td>
+                    <td>Müşterinin son 1 ay içinde şirketi terk edip etmediği (Yes / No). Bağımlı değişkenimiz.</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Tenure</strong> <span class="badge feature">Özellik</span></td>
+                    <td>Müşterinin şirkette kaldığı toplam ay sayısı. Churn üzerindeki en güçlü etkenlerden biridir.</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Contract</strong> <span class="badge feature">Özellik</span></td>
+                    <td>Sözleşme süresi (Month-to-month, One year, Two year). Modelin en yüksek ağırlık (feature importance) verdiği değişkendir.</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>MonthlyCharges</strong></td>
+                    <td>Müşteriden aylık olarak tahsil edilen miktar. Fiyat hassasiyetini gösterir.</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>TotalCharges</strong></td>
+                    <td>Müşteriden bugüne kadar tahsil edilen toplam miktar. Kaggle notebook'larında en çok hataya düşülen sütundur.</td>
+                    <td>Sayısal (Ham veride String olarak gelir!)</td>
+                </tr>
+                <tr>
+                    <td><strong>Demografik Veriler</strong></td>
+                    <td>Gender (Cinsiyet), SeniorCitizen (Yaşlılık: 1/0), Partner (Eş durumu), Dependents (Bakmakla yükümlü olunan çocuklar/bireyler).</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Hizmet Verileri</strong></td>
+                    <td>PhoneService, MultipleLines, InternetService (DSL/Fiber/No), OnlineSecurity, TechSupport, StreamingTV, StreamingMovies.</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Fatura & Ödeme</strong></td>
+                    <td>PaperlessBilling (Kağıtsız fatura), PaymentMethod (Elektronik çek, Kredi kartı vb.).</td>
+                    <td>Kategorik</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>1.2. Veri Kalitesi ve Preprocessing (Ön İşleme) Sırları</h3>
+        <p>Kaggle'daki en çok oy alan (Top Voted) notebook'ların ilk yaptığı hayati hamle <strong>Veri Tipini (Data Type) Düzeltmektir</strong>. Veri setindeki <code>TotalCharges</code> (Toplam Ücret) sütunu tamamen sayılardan oluşmasına rağmen Pandas tarafından <code>Object</code> (String) olarak algılanır. Neden?</p>
+        <p><strong>Büyük Kaggle Sırrı:</strong> Veri setinde şirkete tam o gün katılmış olan (<code>Tenure = 0</code>) tam 11 adet yepyeni müşteri vardır. Bu müşterilerin henüz ilk ayları bile dolmadığı için bir faturası kesilmemiştir. Veritabanından bu tablo çekilirken, bu 11 kişinin "Toplam Ücret" kısmı `NaN` (Not a Number) olarak değil, boş bir metin karakteri (<code>" "</code>) olarak aktarılmıştır. Bu tek bir boşluk karakteri, koca sütunun metin (string) olarak bozulmasına yol açar. Profesyonel analizlerde ilk adım, bu boşlukları tespit edip değere <code>0.0</code> atamak ve sütunu <code>float</code> tipine çevirmektir.</p>
+
+        <h3>1.3. Keşifçi Veri Analizi (EDA) Çıkarımları</h3>
+        <p>Görselleştirme (Matplotlib/Seaborn) araçlarıyla yapılan detaylı analizlerden çıkan en çarpıcı iş dünyası (business) gerçekleri şunlardır:</p>
+        <ul>
+            <li><strong>Sözleşme Tipi (Contract) Tuzağı:</strong> Churn olan müşterilerin %88'inden fazlası "Month-to-month" (Aydan aya) sözleşmeye sahip olanlardır. Taahhütsüz müşteriler en ufak bir fiyat artışında veya rakip kampanyasında acımasızca ayrılırlar. 1 yıllık veya 2 yıllık sözleşmesi olanlarda churn oranı tabiri caizse "sıfıra yakındır".</li>
+            <li><strong>Tenure (Yaşam Süresi) Grafikleri:</strong> Churn grafiği ilk 12 ayda devasa bir zirve (peak) yapar. Eğer bir müşteriyi ilk 1 yıl elinizde tutmayı başarırsanız, o müşteri şirketin kemik kitlesi haline gelir. 60 aydan (5 yıl) fazla tenure'u olan müşteriler neredeyse asla ayrılmaz.</li>
+            <li><strong>Fiber Optik Paradoksu:</strong> Kaggle'da analistleri en çok şaşırtan bulgu budur. "Fiber Optic" gibi pahalı ve hızlı bir internet kullanan müşterilerin churn oranı, eski teknoloji "DSL" kullananlardan veya hiç interneti olmayanlardan <strong>çok daha yüksektir</strong>. İşletme mantığına göre bu, şirketin Fiber altyapısında kronik kopma sorunları olduğunu veya rakiplerin çok daha agresif Fiber fiyatlandırma kampanyaları yaptığını kanıtlar.</li>
+            <li><strong>Sadakat Yaratıcılar (Stickiness):</strong> <code>OnlineSecurity</code> (Çevrimiçi Güvenlik) ve <code>TechSupport</code> (Teknik Destek) hizmetlerini "ALMAYAN" müşteriler çok daha hızlı ayrılmaktadır. Bu hizmetler müşteriyi sisteme bağlayan (Vendor Lock-in) psikolojik çapalardır.</li>
+        </ul>
+
+        <h3>1.4. Özellik Mühendisliği (Feature Engineering)</h3>
+        <p>Modellerin tahmin gücünü maksimize etmek için ham veriler üzerinden yeni sütunlar (features) yaratılmalıdır:</p>
+        <ul>
+            <li><strong>Tenure_Group (Grup Süresi):</strong> 1 ile 72 ay arasında serbestçe dağılan tenure değerleri ağaç algoritmaları için gürültü (noise) yaratabilir. Başarılı notebook'larda bu değerler Binning (Gruplama) yöntemiyle <code>0-12 Ay</code>, <code>13-24 Ay</code>, <code>25-36 Ay</code>, <code>37-48 Ay</code>, <code>49-60 Ay</code>, <code>>60 Ay</code> şeklinde 6 kategorik gruba bölünür.</li>
+            <li><strong>Total_Extra_Services (Toplam Ekstra Hizmet):</strong> Müşterinin aldığı Security, Backup, Protection, Support, TV ve Movie gibi 6 ekstra hizmet `0` ile `6` arasında skorlanarak yeni bir <strong>Bağlılık Skoru</strong> sütunu oluşturulur. Skor 4'ten büyükse o müşterinin churn oranı mucizevi şekilde düşmektedir.</li>
+        </ul>
+
+        <hr style="margin: 50px 0; border: 1px solid #e2e8f0;">
+
+        <!-- ============================================== -->
+        <!-- BÖLÜM 2: CREDIT CARD CHURN                     -->
+        <!-- ============================================== -->
+        <h2>BÖLÜM 2: Credit Card Customers (Bankacılık)</h2>
+        <p>Sakshi Goyal tarafından Kaggle'a yüklenen (<code>sakshigoyal7/credit-card-customers</code>) bu veri seti, bir bankanın kredi kartı portföyündeki 10.127 müşteriyi barındırır. Amaç, kartını kapatmaya veya çekmecesine atmaya meyilli müşterileri önceden tespit etmektir.</p>
+
+        <!-- YENİ EKLENEN KISIM: Problem ve Tahmin Hedefi -->
+        <div class="callout" style="background-color: #fdf6e3; border-left-color: #d97706;">
+            <h4 style="color: #b45309;">🎯 İş Problemi ve Tahmin Hedefi</h4>
+            <p><strong>Temsil Ettiği Problem:</strong> Bankacılık sektöründe kredi kartı kullanımının giderek pasifleşmesi, müşterinin cüzdan payını (wallet share) rakip bankanın kartına kaydırması problemi.</p>
+            <p><strong>Modelin Tahmin Edeceği Şey:</strong> Müşterinin geçmiş finansal işlem hacimlerine dayanarak, hesabını tamamen kapatıp kapatmayacağını veya pasif bir "Ayrılmış Müşteri" (Attrited Customer = 1) statüsüne geçip geçmeyeceğini tahmin eder.</p>
+        </div>
+
+        <!-- YENİ EKLENEN KISIM: Avantaj / Dezavantaj Tablosu -->
+        <h3>Credit Card Veri Setinin Avantajları ve Dezavantajları</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="background-color: #276749;">Avantajlar (Pros)</th>
+                    <th style="background-color: #c53030;">Dezavantajlar (Cons)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Gerçek hayattaki finansal problemleri (Soft churn) harika simüle eder.</td>
+                    <td>Son 2 sütunundaki Naive Bayes verileri acemi veri bilimciler için ölümcül bir tuzaktır.</td>
+                </tr>
+                <tr>
+                    <td>Dengesiz veri sınıflandırma (Imbalanced classification) yeteneğinizi SMOTE ve ADASYN ile mükemmel test eder.</td>
+                    <td>Veri çok temizdir, bu yüzden bir Veri Bilimi mülakatındaki "Kirli Veri Temizleme" yeteneklerinizi ölçemez.</td>
+                </tr>
+                <tr>
+                    <td>Kredi Kullanım Oranı gibi finansal oranları (Ratios) sıfırdan türetmek için en iyi settir.</td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>2.1. Veri Sözlüğü (Data Dictionary)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Değişken İsmi</th>
+                    <th>Açıklama</th>
+                    <th>Türü</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>CLIENTNUM</strong></td>
+                    <td>Eşsiz müşteri numarası (Silinmesi gerekir).</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Attrition_Flag</strong> <span class="badge target">Hedef (Target)</span></td>
+                    <td>Müşterinin durumu: "Existing Customer" (Mevcut) veya "Attrited Customer" (Ayrılmış).</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Customer_Age</strong></td>
+                    <td>Müşterinin Yaşı. Demografik analizler içindir.</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Demografik Veriler</strong></td>
+                    <td>Gender (Cinsiyet), Dependent_count (Bakmakla yükümlü olunan kişi sayısı), Education_Level (Eğitim seviyesi), Marital_Status (Medeni hal), Income_Category (Gelir kategorisi).</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Card_Category</strong></td>
+                    <td>Kartın türü (Blue, Silver, Gold, Platinum). Verinin %93'ü 'Blue' kartlıdır.</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Months_on_book</strong></td>
+                    <td>Müşterinin banka ile ilişkisinin ay cinsinden süresi. (Telco'daki Tenure benzeri).</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Total_Relationship_Count</strong></td>
+                    <td>Müşterinin bankada sahip olduğu toplam ürün sayısı (Kredi kartı, Kredi, Mevduat hesabı vb.).</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Months_Inactive_12_mon</strong> <span class="badge feature">Özellik</span></td>
+                    <td>Son 12 ayda hesabın tamamen inaktif olduğu ay sayısı. Kritik bir işarettir.</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Contacts_Count_12_mon</strong> <span class="badge feature">Özellik</span></td>
+                    <td>Son 12 ayda banka ile iletişime geçilme (müşteri hizmetleri) sayısı.</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Credit_Limit</strong></td>
+                    <td>Kredi kartının toplam limiti.</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Total_Revolving_Bal</strong></td>
+                    <td>Kredi kartı dönem borcunun devreden kısmı (Revolving Balance - Asgari ödeme sonrası kalan borç).</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Finansal İşlem (Transaction) Verileri</strong></td>
+                    <td>Total_Trans_Amt (Toplam Harcama Tutarı), Total_Trans_Ct (Toplam Harcama Adedi), Total_Amt_Chng_Q4_Q1 (Tutar değişim oranı), Total_Ct_Chng_Q4_Q1 (Adet değişim oranı).</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Avg_Utilization_Ratio</strong></td>
+                    <td>Ortalama kredi kullanım oranı (Kullanılan Kredi / Toplam Kredi Limiti).</td>
+                    <td>Sayısal</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <h4>⚠️ Ölümcül Hata: Naive Bayes Sızıntısı (Data Leakage)</h4>
+            <p>Orijinal CSV dosyasının en sonunda yer alan ve <code>"Naive_Bayes_Classifier_Attrition_Flag_..."</code> ile başlayan upuzun isimli iki sütun bulunmaktadır. Kaggle topluluğunda yapılan en büyük acemi hatası bu sütunları kullanmaktır. Bu sütunlar ham veri değildir! Veri setini yükleyen yazarın, kendi bilgisayarında eğittiği bir Naive Bayes modelinin ürettiği "Tahmin Olasılıkları"dır. Yani cevap anahtarının ta kendisidir. Eğer bu iki sütunu modelinizde özellikleri (features) arasına koyarsanız, modeliniz <strong>%100 Accuracy (Doğruluk)</strong> üretecektir ve gerçek dünyada hiçbir işe yaramayacaktır. Veri analizi yapmadan önce bu iki sütun derhal <strong>kesinlikle silinmelidir (drop)</strong>.</p>
+        </div>
+
+        <h3>2.2. Dengesiz Veri (Imbalanced Data) Problemi</h3>
+        <p>Veri setindeki 10.127 müşterinin sadece <strong>1627'si (%16.07)</strong> churn olmuştur (Attrited Customer). Kalan %84 mevcut müşteridir. Bu ciddi bir sınıf dengesizliği (class imbalance) problemidir. Standart modeller (özellikle Lojistik Regresyon), çoğunluk sınıfına tembellik yaparak "herkes mevcut müşteri olarak kalacak" tahmini üretir ve yüksek doğrulukla övünür. Başarılı notebook'lar bu durumu şu tekniklerle aşar:</p>
+        <ul>
+            <li><strong>Algoritmik Ağırlıklandırma (Class Weights):</strong> Random Forest veya XGBoost modellerinin içine <code>class_weight='balanced'</code> veya <code>scale_pos_weight = 5</code> yazılarak, modelin yanlış tahmin ettiği her churn vakasında ona 5 kat daha büyük ceza puanı yazması sağlanır. Böylece model azınlık sınıfa odaklanmak zorunda kalır.</li>
+            <li><strong>Oversampling (SMOTE):</strong> Sentetik Azınlık Aşırı Örnekleme Tekniği (SMOTE) kullanılarak, var olan 1627 churn müşterisinden yapay zeka aracılığıyla klonlar (sentetik veri noktaları) üretilir ve her iki sınıfın sayısı 8500'e eşitlenir. Veri sızıntısını önlemek için SMOTE <strong>asla tüm veriye değil</strong>, sadece eğitim setine (Train set) uygulanmalıdır.</li>
+        </ul>
+
+        <h3>2.3. Keşifçi Veri Analizi (EDA) Çıkarımları</h3>
+        <ul>
+            <li><strong>Harcama Alışkanlıklarındaki Uçurum:</strong> <code>Total_Trans_Ct</code> (İşlem Sayısı) ve <code>Total_Trans_Amt</code> (İşlem Tutarı) grafikleri incelendiğinde, bankayı terk eden müşterilerin son aylarında işlem sayılarını inanılmaz boyutlarda azalttığı görülür. Müşteri bir ay 50 işlem yapıyorken 5 işleme düşmüşse o müşteri gitmeye çoktan karar vermiştir.</li>
+            <li><strong>İletişim (Contacts) Kırmızı Alarmı:</strong> <code>Contacts_Count_12_mon</code> analizine göre, müşteri hizmetleriyle son 1 yılda 0, 1 veya 2 kere görüşenlerde churn yok denecek kadar azdır. Ancak müşteri bankayı 6 defa aramışsa o grubun %100'ü churn olmuştur! Bankacılıkta insanlar şikayet veya çaresizlik için ararlar, teşekkür etmek için değil.</li>
+            <li><strong>Pasif Kalma Süresi (Inactivity):</strong> <code>Months_Inactive_12_mon</code> 3 ve üzerine çıktığında müşteri finansal olarak bankadan kopmuş sayılır.</li>
+        </ul>
+
+        <h3>2.4. İleri Düzey Özellik Mühendisliği (Advanced Feature Engineering)</h3>
+        <p>Finansal verilerde ham sayılar (Absolute Values) tek başına hikayenin yarısını anlatır. Oranlar (Ratios) hikayenin tamamıdır. İşte efsanevi Kaggle Notebook taktikleri:</p>
+        <ul>
+            <li><strong>İşlem Başına Ortalama Tutar (Avg_Amt_Per_Transaction):</strong> Kaggle veri bilimcileri mevcut sütunlardan <code>Total_Trans_Amt / Total_Trans_Ct</code> matematiksel işlemini yaparak bu yeni sütunu üretir. Az sıklıkta ama çok büyük meblağlı lüks harcama yapan (örneğin uçak bileti alan) müşteriler ile her gün küçük kahve alan müşterileri ayırmak modelin zekasını artırır.</li>
+            <li><strong>Ürün Çeşitliliği Eksikliği:</strong> <code>Total_Relationship_Count</code> sütunu 1 veya 2 olan (yani bankada sadece kredi kartı olan, vadesiz hesabı veya kredisi olmayan) müşteriler çok daha kolay ayrılır. Müşteri bankaya ne kadar çok ürünle (Kredi, Mevduat, Otomatik Fatura Talimatı) bağlanırsa o kadar kalıcı olur.</li>
+        </ul>
+
+        <hr style="margin: 50px 0; border: 1px solid #e2e8f0;">
+
+        <!-- ============================================== -->
+        <!-- BÖLÜM 3: E-COMMERCE CHURN                      -->
+        <!-- ============================================== -->
+        <h2>BÖLÜM 3: E-commerce Customer Churn (E-Ticaret)</h2>
+        <p>Ankit Verma tarafından oluşturulan (<code>ankitverma2010/ecommerce-customer-churn-analysis-and-prediction</code>) bu veri seti, 5630 müşterinin e-ticaret platformu (Amazon, Trendyol, Hepsiburada benzeri bir yapı) üzerindeki dijital ayak izlerini içerir.</p>
+
+        <!-- YENİ EKLENEN KISIM: Problem ve Tahmin Hedefi -->
+        <div class="callout" style="background-color: #fdf6e3; border-left-color: #d97706;">
+            <h4 style="color: #b45309;">🎯 İş Problemi ve Tahmin Hedefi</h4>
+            <p><strong>Temsil Ettiği Problem:</strong> E-ticaret platformlarında müşteri bağlılığını artırmak, sepeti terk edenlerin veya rakip pazar yerlerine (marketplaces) kaçanların oranını minimize etmektir.</p>
+            <p><strong>Modelin Tahmin Edeceği Şey:</strong> Müşterinin son alışveriş hareketleri, şikayet geçmişi ve kazandığı nakit iade (Cashback) oranlarına dayanarak, uygulamayı kalıcı olarak terk edip etmeyeceğini (Churn = 1) tahmin eder.</p>
+        </div>
+
+        <!-- YENİ EKLENEN KISIM: Avantaj / Dezavantaj Tablosu -->
+        <h3>E-commerce Veri Setinin Avantajları ve Dezavantajları</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="background-color: #276749;">Avantajlar (Pros)</th>
+                    <th style="background-color: #c53030;">Dezavantajlar (Cons)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Gerçek dünyadaki e-ticaret lojistik ve pazarlama problemlerini (Cashback, Mesafe vb.) kusursuz yansıtır.</td>
+                    <td>Veri sayısının 5630 ile sınırlı olması, Derin Öğrenme (Deep Learning) modelleri için yetersizdir.</td>
+                </tr>
+                <tr>
+                    <td>İçinde yüzlerce eksik veri (Missing Values) barındırdığı için "Veri Temizleme ve Atama (Imputation)" pratikleri için efsanevi bir settir.</td>
+                    <td>Müşterilerin hangi spesifik ürünü satın aldığı (Sepet Analizi) eksiktir, sadece Kategori bazında (Telefon, Kıyafet) veri vardır.</td>
+                </tr>
+                <tr>
+                    <td>LightGBM ve XGBoost gibi ağaç modellerinde eksik veri bırakıldığında algoritmanın nasıl davrandığını görmek için birebirdir.</td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>3.1. Veri Sözlüğü (Data Dictionary)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Değişken İsmi</th>
+                    <th>Açıklama</th>
+                    <th>Türü</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>CustomerID</strong></td>
+                    <td>Eşsiz müşteri kimliği (Analizden çıkarılmalı).</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Churn</strong> <span class="badge target">Hedef (Target)</span></td>
+                    <td>Müşteri kaybı yaşanıp yaşanmadığı (1 = Churn, 0 = Mevcut).</td>
+                    <td>Sayısal (İkili / Binary)</td>
+                </tr>
+                <tr>
+                    <td><strong>Tenure</strong> <span class="badge feature">Özellik</span></td>
+                    <td>Müşterinin platformda geçirdiği toplam süre (ay cinsinden). İçinde yüzlerce eksik değer (NaN) barındırır.</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Demografik & Cihaz</strong></td>
+                    <td>PreferredLoginDevice (Mobile Phone/Computer), CityTier (Şehir gelişim seviyesi 1,2,3), Gender (Cinsiyet), MaritalStatus (Medeni hal).</td>
+                    <td>Kategorik</td>
+                </tr>
+                <tr>
+                    <td><strong>Davranışsal Veriler</strong></td>
+                    <td>HourSpendOnApp (Uygulamada geçirilen saat), NumberOfDeviceRegistered (Kayıtlı cihaz sayısı), PreferedOrderCat (En çok sipariş verilen kategori - Laptop, Mobile, Grocery vs.), SatisfactionScore (Memnuniyet puanı 1-5).</td>
+                    <td>Karışık (Sayısal & Sıralı)</td>
+                </tr>
+                <tr>
+                    <td><strong>İşlemsel Veriler</strong></td>
+                    <td>NumberOfAddress (Kayıtlı adres sayısı), WarehouseToHome (Deponun eve uzaklığı), PreferredPaymentMode (Kredi Kartı, Kapıda Ödeme, E-cüzdan), OrderAmountHikeFromlastYear (Sipariş miktarındaki yıllık artış yüzdesi), CouponUsed (Kullanılan indirim kuponu adedi), OrderCount (Aylık toplam sipariş sayısı), DaySinceLastOrder (Son siparişten bu yana geçen gün).</td>
+                    <td>Sayısal</td>
+                </tr>
+                <tr>
+                    <td><strong>Sadakat Verileri</strong></td>
+                    <td>Complain (Son ay şikayet var mı? 1/0), CashbackAmount (Müşterinin kazandığı nakit iade tutarı).</td>
+                    <td>Sayısal</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>3.2. Gerçek Dünya Problemi: Kayıp Veriler (Missing Data) İle Başa Çıkmak</h3>
+        <p>Telco ve Kredi Kartı veri setleri genellikle laboratuvar ortamı kadar temizdir. Ancak bu e-ticaret veri seti, gerçek dünya karmaşasını yansıtır. Tam 5 kritik sütunda (<code>Tenure</code>, <code>DaySinceLastOrder</code>, <code>HourSpendOnApp</code>, <code>OrderAmountHikeFromlastYear</code>, <code>CouponUsed</code>) ciddi eksiklikler (Null/NaN) vardır. Verileri <code>dropna()</code> ile silmek demek, 5630 müşterinin üçte birini çöpe atmak demektir.</p>
+        <p><strong>En İyi Kaggle Çözümleri (Imputation Strategies):</strong></p>
+        <ul>
+            <li><strong>Medyan Ataması (Median Imputation):</strong> <code>Tenure</code> değişkeninin dağılımı görselleştirildiğinde sağa çarpık (Right Skewed) olduğu görülür (Çoğu müşteri 1-2 aylıktır, az sayıda 60 aylık müşteri vardır). Dağılım simetrik olmadığı için Ortalama (Mean) atamak istatistiksel bir hatadır. En çok oy alan notebook'lar buradaki eksik verileri <strong>Ortanca (Median)</strong> ile doldurur.</li>
+            <li><strong>Gelişmiş Doldurma - KNN Imputer:</strong> Sıradan ortalamalar yerine, makine öğrenmesi algoritması (K-Nearest Neighbors) kullanılarak eksik veriler doldurulur. Örneğin yaşı, cihazı ve şehri benzeyen diğer 5 müşterinin `HourSpendOnApp` değerlerinin ortalaması alınarak o eksik hücre doldurulur. Bu muazzam bir doğruluk artışı sağlar.</li>
+        </ul>
+
+        <h3>3.3. Keşifçi Veri Analizi (EDA) Çıkarımları</h3>
+        <ul>
+            <li><strong>Kusursuz Şikayet Etkisi (Complain = 1):</strong> Şikayet eden müşterilerin (<code>Complain = 1</code>) churn oranı, etmeyenlere kıyasla astronomik düzeydedir. E-ticarette bir müşteri siparişi geciktiği veya bozuk geldiği için destek ekibiyle tartıştıysa, firmayı saniyeler içinde değiştirir çünkü alternatif (rakip e-ticaret siteleri) 1 tıklama uzağındadır.</li>
+            <li><strong>Cashback (Nakit İade) Bağımlılığı:</strong> <code>CashbackAmount</code> değeri yüksek olan müşteriler churn olmaya en uzak, en sadık müşteri grubudur. Kullanıcı cüzdanında birikmiş bir para görüyorsa, başka uygulamaya geçmez. Kaggle modellerinde <code>CashbackAmount</code> her zaman en tepedeki (Top 3) en önemli değişkendir.</li>
+            <li><strong>Lojistik ve Lokasyon Analizi:</strong> <code>WarehouseToHome</code> (Depoya olan mesafe) ile <code>CityTier 3</code> (Küçük Şehir/Kasaba) değişkenleri birleştiğinde mükemmel bir çıkarım ortaya çıkar. Küçük şehirde yaşayıp depoya uzak olanların churn oranı yüksektir. Müşteri 1 hafta kargo beklemekten sıkılıp rakibe gitmektedir.</li>
+            <li><strong>Sipariş Kategorisi (PreferedOrderCat):</strong> "Mobile Phone" (Cep Telefonu) alanların churn oranı "Grocery" (Market Alışverişi) alanlardan katbekat yüksektir. E-ticaret firmaları telefon satanları değil, yumurta/süt satanları el üstünde tutmalıdır çünkü günlük tüketim ürünleri sürekli platforma giriş yapılmasını (retention) sağlar.</li>
+        </ul>
+
+        <hr style="margin: 50px 0; border: 1px solid #e2e8f0;">
+
+        <!-- ============================================== -->
+        <!-- EK BÖLÜM 4: DERİNLEMESİNE VERİ SETİ KARŞILAŞTIRMASI -->
+        <!-- ============================================== -->
+        <h2>BÖLÜM 4: VERİ SETLERİNİN YAPI (SHAPE) VE ZORLUK KARŞILAŞTIRMASI</h2>
+        <p>Her üç veri setinin anatomisini, satır (row) ve sütun (column) yoğunluklarını, ve bu hacimsel farklılıkların modelleme zorluklarına olan etkisini makro bir perspektifle karşılaştırıyoruz.</p>
+
+        <h3>4.1. Veri Hacmi ve Boyutsallık (Dimensionality) Tablosu</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Veri Seti (Sektör)</th>
+                    <th>Satır Sayısı (Müşteri)</th>
+                    <th>Sütun Sayısı (Feature)</th>
+                    <th>Churn Oranı (Dengesizlik)</th>
+                    <th>Eksik Veri Durumu (NaN)</th>
+                    <th>Öznitelik Yoğunluğu (Feature Density)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Telco (Telekomünikasyon)</strong></td>
+                    <td>7,043</td>
+                    <td>21</td>
+                    <td>%26.5</td>
+                    <td>Çok Düşük (Sadece 11 gizli boşluk)</td>
+                    <td>Orta (Ağırlıklı olarak Kategorik)</td>
+                </tr>
+                <tr>
+                    <td><strong>Credit Card (Bankacılık)</strong></td>
+                    <td>10,127</td>
+                    <td>23 (Sızdıran 2 kolon hariç 21)</td>
+                    <td>%16.07 (Şiddetli Dengesiz)</td>
+                    <td>Sıfır (Temizlenmiş Laboratuvar Verisi)</td>
+                    <td>Yüksek (Finansal Sürekli Değişkenler)</td>
+                </tr>
+                <tr>
+                    <td><strong>E-commerce (E-Ticaret)</strong></td>
+                    <td>5,630</td>
+                    <td>20</td>
+                    <td>%16.8 (Şiddetli Dengesiz)</td>
+                    <td>Çok Yüksek (5 farklı kolonda yüzlerce Null)</td>
+                    <td>Karmaşık (Davranışsal ve İşlemsel)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <h4>🔍 Neden Sadece 20-23 Sütun Var? (Gerçek Dünya vs. Kaggle)</h4>
+            <p>Gerçek hayatta (Big Data ortamında) bir bankanın müşteri veri ambarında her bir müşteri için 3000'den fazla sütun (özellik) bulunur (Örn: "Müşterinin Pazar gecesi yaptığı harcama ortalaması", "Müşterinin 3 yıl önceki çağrı merkezi ses tonu analizi" vb.). Ancak Kaggle veri setleri eğitim ve pratik amacıyla yapıldığından <strong>Özellik İndirgeme (Feature Reduction / PCA)</strong> işlemine tabi tutulmuş veya sadece en kritik 20 ana başlık (Master Features) bırakılarak anonimleştirilmiştir. Bu yüzden her kolonun (sütunun) tahmin gücü inanılmaz derecede yüksektir.</p>
+        </div>
+
+        <h3>4.2. İleri Düzey Dengesiz Veri (Imbalanced Data) Çözümleri</h3>
+        <ul>
+            <li><strong>Telco ve E-commerce İçin SMOTE-NC:</strong> Klasik SMOTE algoritması sadece sayısal sütunlarda (Continuous Data) çalışır. Ancak Telco ve E-ticaret verilerinde "Şehir Katmanı", "Sözleşme Tipi" gibi Kategorik sütunlar ağırlıktadır. Bu yüzden Kaggle ustaları <strong>SMOTE-NC (Nominal and Continuous)</strong> varyasyonunu kullanarak hem kategorik hem sayısal sütunları aynı anda çoğaltır.</li>
+            <li><strong>Credit Card İçin ADASYN (Adaptive Synthetic Sampling):</strong> Kredi kartı işlem tutarları gibi sürekli (continuous) sayısal verilerde, karar sınırına (Decision Boundary) çok yakın olan, yani tahmin edilmesi zor olan churn vakalarına daha fazla sentetik veri üreten ADASYN algoritması tercih edilir. Böylece model, "Kalan müşteri" gibi davranan sinsi "Giden müşterileri" daha iyi ayırt eder.</li>
+        </ul>
+
+        <h3>4.3. Hiperparametre Optimizasyon Savaşları (Hyperparameter Tuning)</h3>
+        <p>Sütun ve Satır sayısı değiştikçe, algoritmaların parametreleri de kökten değişmelidir. Mükemmel bir XGBoost modeli yaratmak için GridSearchCV yerine artık <strong>Optuna</strong> adı verilen Bayesyan optimizasyon kütüphanesi kullanılmaktadır.</p>
+        <ul>
+            <li><strong>max_depth (Ağaç Derinliği):</strong> 20 sütunlu bu Kaggle veri setlerinde, ağacın derinliğini 8 veya 10 yapmak (Overfitting - Aşırı Öğrenme) intihardır. Genellikle <code>max_depth: 3, 4, 5</code> seviyelerinde tutularak modelin veriyi ezberlemesi engellenir.</li>
+            <li><strong>learning_rate (Öğrenme Oranı):</strong> Sütun sayısı az olduğu için (20), modelin ince detayları yavaş yavaş öğrenmesi adına <code>learning_rate: 0.01</code> veya <code>0.05</code> gibi düşük değerler verilir ve <code>n_estimators</code> (Ağaç Sayısı) 1000'e kadar çıkarılır.</li>
+        </ul>
+
+        <hr style="margin: 50px 0; border: 1px solid #e2e8f0;">
+
+        <!-- ============================================== -->
+        <!-- BÖLÜM 5: MODEL DEĞERLENDİRME VE İŞLETME ETKİSİ -->
+        <!-- ============================================== -->
+        <h2>BÖLÜM 5: Modellerin İşletme Finansına (ROI) Doğrudan Etkisi</h2>
+        <p>Tüm Kaggle notebook'larının birleştiği en kritik nokta şudur: Müşteri kaybı tahmini yaparken <strong>Accuracy (Doğruluk) metriğine asla güvenmeyin!</strong> Bir modelin başarısı, kurtardığı parayla (ROI - Return on Investment) ölçülür.</p>
+
+        <h3>5.1. Accuracy Neden Bir İlizyondur?</h3>
+        <p>E-ticaret veri setinde müşterilerin %83'ü kalıcı, %17'si churn'dür. Sadece <code>return "Kalacak"</code> yazan kör bir fonksiyon bile %83 Accuracy elde eder! Ancak işletmenin asıl aradığı o %17'lik giden kesimdir.</p>
+        
+        <div class="callout">
+            <h4>📌 Churn İçin Altın Metrikler</h4>
+            <ul>
+                <li><strong>Recall (Duyarlılık / True Positive Rate):</strong> Churn analizindeki kral metriktir. "Gerçekten ayrılacak olan 100 kişinin kaçını yapay zeka önceden tespit edip uyardı?" sorusunun cevabıdır. Bankalar yanlış uyarılara (False Positive) katlanabilir. Ancak gidecek adama kalacak deyip (False Negative) müşteriyi kaçırmaya katlanamaz. Recall her zaman maksimize edilmelidir.</li>
+                <li><strong>F1-Score:</strong> Precision (Kesinlik) ve Recall (Duyarlılık) metriklerinin harmonik ortalamasıdır. Hem yanlış alarmları, hem de kaçırılan fırsatları aynı anda dengelemek isteyen dengesiz veri setleri için en güvenilir skorlama yöntemidir.</li>
+                <li><strong>ROC-AUC (Eğri Altında Kalan Alan):</strong> Modelin Sınıf 1 (Gidenler) ile Sınıf 0'ı (Kalanlar) birbirinden ne kadar iyi ayırabildiğinin ihtimal bazlı özetidir. İyi bir Churn modeli ROC-AUC'de minimum 0.85 skoru almalıdır.</li>
+            </ul>
+        </div>
+
+        <h3>5.2. Maliyet-Fayda Analizi (Cost-Benefit Matrix)</h3>
+        <p>İleri düzey analistler modellerini salt matematiksel değil, finansal olarak test ederler. Çıkarılan karışıklık matrisine (Confusion Matrix) dolar bazında değer biçilir:</p>
+        <ul>
+            <li><strong>True Positive (Doğru Yakalanan Giden):</strong> Model bildi, şirket indirim yaptı, müşteri kaldı. +500$ Şirket Karı.</li>
+            <li><strong>False Positive (Yanlış Alarm):</strong> Müşteri zaten kalacaktı ama model "gidecek" dedi. Şirket boş yere %20 indirim yaptı. -50$ Şirket Zararı.</li>
+            <li><strong>False Negative (Kaçırılan Müşteri):</strong> Müşteri gidiyordu, model göremedi. Müşteri temelli kaybedildi. -500$ Şirket Zararı.</li>
+        </ul>
+        <p>İşte makine öğrenmesi modelinizin Hiperparametreleri, tam olarak bu maliyet fonksiyonunu (Cost Function) optimize edecek şekilde eğitilmelidir. Bankacılıkta (Credit Card veri seti), False Negative'in cezası devasa büyüklüktedir.</p>
+
+        <!-- ============================================== -->
+        <!-- YENİ EKLENEN BÖLÜM 6: FİNAL VERİ SETİ SEÇİMİ   -->
+        <!-- ============================================== -->
+        <hr style="margin: 50px 0; border: 1px solid #e2e8f0;">
+        <h2>BÖLÜM 6: FİNAL VERİ SETİ SEÇİMİ VE SONUÇ ÇIKARIMI</h2>
+        <p>Bu üç devasa ve popüler veri setini detaylıca analiz ettikten sonra, bir Veri Bilimi Portföy projesi (Portfolio Project) oluşturmak veya işletme dünyasındaki zorlukları tam anlamıyla simüle etmek için <strong>Günün Şampiyonu (Final Dataset)</strong> olarak birini seçmemiz gerekmektedir.</p>
+
+        <h3>6.1. Kazanan Veri Seti: Credit Card Customers (Bankacılık)</h3>
+        <p>Kararımız: <strong>Credit Card Customers</strong> (Sakshi Goyal) veri seti, bir makine öğrenmesi mühendisini en çok zorlayan, en eğitici ve gerçek hayata en yakın veri setidir. Neden mi?</p>
+        <ul>
+            <li><strong>Uçarı Dengesizlik:</strong> Sadece %16'lık churn oranı ile sizi Recall ve Precision takaslarını (Trade-off) öğrenmeye, SMOTE/ADASYN gibi gelişmiş örnekleme metotlarını kullanmaya mecbur bırakır. Telco (%26) bu konuda fazla rahattır.</li>
+            <li><strong>Veri Sızıntısı (Data Leakage) Tuzağı:</strong> Naive Bayes sütunları, veri bilimcilerin veriyi körü körüne algoritmaya basmaması gerektiğini, veriyi "anlaması" gerektiğini kanıtlayan muazzam bir tuzaktır.</li>
+            <li><strong>Sürekli Verilerin Zenginliği:</strong> Telco seti neredeyse tamamen Evet/Hayır (Kategorik) sorulardan oluşurken, bu veri seti işlem tutarları (Transaction Amounts) ve Kredi Limitleri gibi sonsuz sürekli (continuous) değişkenler barındırır. Bu durum <em>"Kredi Kullanım Oranı"</em> gibi oran tabanlı özellik mühendislikleri (Ratios) yapmanıza imkan tanır.</li>
+        </ul>
+
+        <h3>6.2. Final Veri Seti İçin Uygulanabilir Model Mimarisi</h3>
+        <p>Kredi Kartı Churn veri seti seçildiğinde uygulanması gereken, sektör standartlarında kanıtlanmış "Model Pipeline" (Model Boru Hattı) şu şekilde olmalıdır:</p>
+        
+        <ol>
+            <li><strong>Taban Modeli (Baseline) - Random Forest:</strong> 
+                <br>Projeye her zaman Random Forest ile başlanmalıdır. Kesinlikle hiperparametre ayarı yapmadan, sadece <code>class_weight='balanced'</code> parametresi verilerek eğitilir. 
+                <br><em>Amacı:</em> En yüksek skoru almak değil, model içindeki <code>feature_importances_</code> kodu sayesinde "İşlem Adedi Düşüşü" (Total_Trans_Ct) sütununun churn üzerindeki yıkıcı etkisini hemen saptamak ve İşletme Yönetimine (Stakeholders) raporlamaktır.
+            </li>
+            
+            <li><strong>Üretim (Production) Modeli - LightGBM (LGBM):</strong> 
+                <br>Finansal verilerde (ve satır sayısının 10.000'i geçtiği senaryolarda) XGBoost yerine LightGBM tercih edilir. Çünkü bellek (RAM) kullanımı çok daha düşüktür ve Leaf-wise (Yaprak bazlı) büyüme stratejisi sayesinde imbalanced (dengesiz) verilerde azınlık sınıfını çok daha keskin yakalar.
+                <br><em>Uygulama:</em> Optuna ile <code>num_leaves</code> ve <code>learning_rate</code> optimize edilir.
+            </li>
+
+            <li><strong>Model Açıklanabilirliği - SHAP:</strong> 
+                <br>LightGBM modeli eğitildikten sonra, sonucun kara kutu (Black Box) olarak kalmaması için SHAP kütüphanesi modele entegre edilir. Böylece banka görevlileri ekranda sadece "%85 Churn Riski" değil, "Müşteri son 1 yılda 5 kez şikayet araması yaptığı için ve kredi kartı limitinin %90'ını doldurduğu için riski yüksektir" açıklamasını görebilirler.
+            </li>
+        </ol>
+
+        <div class="callout">
+            <h4>🏆 Genel Sonuç (Conclusion)</h4>
+            <p>Müşteri Kaybı (Churn) Analizi kod yazmaktan ziyade bir <strong>iş mantığı (Business Logic)</strong> sanatıdır. "Inactivity" (İşlemsizlik) veya "Complain" (Şikayet) sütunlarını sadece birer matematiksel değişken olarak değil, arka planda mutsuz bir insan olarak gördüğünüzde, Kaggle'da zirveye oynayacak o yeni sütunu (Feature) icat edebilirsiniz. Modellerin başarısı Accuracy (Doğruluk) ile değil, kurtardığınız müşterilerin şirkete kazandırdığı Dolarlarla ölçülür.</p>
+        </div>
+
+        <br><br>
+        <p style="text-align: center; color: #718096; font-style: italic; margin-top: 50px;">Bu eşsiz ve genişletilmiş rehber, veri bilimindeki en iyi Kaggle pratikleri, derinlemesine istatistiksel modelleme yöntemleri ve iş mantığı sentezlenerek, eksiksiz bir şekilde oluşturulmuştur.</p>
+    </div>
+</body>
+</html>
