@@ -1,5 +1,7 @@
 # Bank Customer Churn Prediction & Dashboard
 
+[![Live Dashboard](https://img.shields.io/badge/Live_Dashboard-emin--churn.streamlit.app-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://emin-churn.streamlit.app/)
+
 Bu proje, banka müşterilerinin kurumu terk etme (churn) riskini makine öğrenmesi teknikleriyle tahmin etmeyi ve sonuçları interaktif bir arayüzle sunmayı amaçlamaktadır.
 
 ## Proje İçeriği
