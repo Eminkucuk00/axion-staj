@@ -1,0 +1,19 @@
+# Data files
+*.csv
+*.xlsx
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDEs and environments
+.vscode/
+.idea/
+*.venv
+venv/
+env/
+.env
+
+# Agent artifacts
+.agents/

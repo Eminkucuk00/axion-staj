@@ -1,85 +1,33 @@
-# 📊 Müşteri Kaybı (Churn) Tahmini ve Analizi
+# Bank Customer Churn Prediction & Dashboard
 
-> **Öğrenci/Geliştirici:** Mehmet Emin Küçük  
-> **Kapsam:** Veri Bilimi Zorunlu Staj Projesi  
-> **Tarih:** 2026  
+Bu proje, banka müşterilerinin kurumu terk etme (churn) riskini makine öğrenmesi teknikleriyle tahmin etmeyi ve sonuçları interaktif bir arayüzle sunmayı amaçlamaktadır.
 
----
+## Proje İçeriği
 
-Makine Öğrenmesi (Machine Learning) algoritmaları kullanılarak, bir şirketin mevcut müşterilerinin hizmeti terk etme (churn) olasılıklarını önceden tahmin eden ve müşteri yaşam boyu değerini (CLV) hesaplayan veri bilimi projesi.
+Bu repository sadece en iyi sonuç veren, üretim ortamına (production) hazır, uçtan uca çalışan profesyonel kodları içermektedir:
 
----
+### 1. `HAFTA 6/final_pipeline.py`
+Bu dosya, ham veri setini alan ve makine öğrenmesi modelini uçtan uca eğiten **Kusursuz Veri Ön İşleme ve Modelleme** scriptidir.
+- **Özellik Mühendisliği (Feature Engineering):** Ham veriden iş zekasına uygun 5 yeni matematiksel değişken üretir.
+- **Veri Temizliği:** Modelde kopya çekilmesine (data leakage) yol açabilecek veya gereksiz olan kolonları temizler.
+- **Dengesiz Veri Çözümü (SMOTE):** Churn (terk eden) müşteri sayısının azlığını SMOTE algoritmasıyla dengeler.
+- **Model Eğitimi:** XGBoost algoritmasını `max_depth=6`, `learning_rate=0.1` hiperparametreleriyle eğitir.
+- **Açıklanabilirlik (SHAP):** Sadece kimin churn olacağını tahmin etmekle kalmaz, **SHAP TreeExplainer** kullanarak her müşterinin *neden* riskli olduğunu (Ana Risk Nedeni) matematiksel olarak kanıtlar.
+- **Çıktı:** 10.127 müşterinin tamamını 0.40 eşik değeriyle skorlar ve `Musteri_Risk_Cikti_Tablosu_Guncel.csv` tablosunu üretir.
 
-## 📸 Proje Çıktıları ve Görseller
+### 2. `HAFTA 6/churn_dashboard.py`
+Bu dosya, eğitilen modelin ürettiği sonuçları (CSV tablosunu) iş birimlerinin (yöneticilerin, şube müdürlerinin) kullanımına sunan **Streamlit** tabanlı interaktif bir web arayüzüdür.
+- Dinamik filtreleme ile Yüksek, Orta, Düşük riskli müşterilerin anlık analizi.
+- Müşterileri kaybetmemize yol açan en önemli "Risk Faktörleri"nin grafiksel sunumu.
+- Hangi müşteriye hangi aksiyonun alınması gerektiğini gösteren (Örn: Acil Arama ve İkna Teklifi) listeler.
 
-| Veri Dağılımı (EDA) | Karar Ağacı Sonuçları | Performans Metrikleri |
-|:---------:|:--------------:|:---------------:|
-| *(Görsel eklenecek)* | *(Görsel eklenecek)* | *(Görsel eklenecek)* |
+## Nasıl Kullanılır?
 
----
-
-## 🚀 Projeyi Çalıştırma (Kurulum)
-
-### Gereksinimler
-- Python 3.8 veya üzeri
-- Jupyter Notebook veya destekleyen bir IDE
-
-### Adım 1: Repoyu Klonlayın
-```bash
-git clone https://github.com/Eminkucuk00/zorunlu-staj.git
-cd zorunlu-staj
-```
-
-### Adım 2: Gerekli Kütüphaneleri Yükleyin
-```bash
-pip install pandas numpy scikit-learn matplotlib seaborn
-```
-
-### Adım 3: Analiz Dosyalarını Başlatın
-Veri ön işleme ve makine öğrenmesi modellerini görmek için ilgili `.ipynb` veya `.py` scriptlerini çalıştırabilirsiniz.
-```bash
-jupyter notebook
-```
-
----
-
-## 🧠 Teknik Detaylar
-
-| Özellik | Detay |
-|---------|-------|
-| **Kapsam** | Churn (Müşteri Kaybı) Tahmini ve CLV Analizi |
-| **Ön İşleme (Preprocessing)** | Eksik Veri Temizleme, Outlier Tespiti, Label Encoding |
-| **Algoritmalar** | Lojistik Regresyon, Random Forest, Karar Ağaçları |
-| **Değerlendirme Metrikleri** | Accuracy, Precision, Recall, F1-Score |
-| **Literatür Taraması** | Çok sayıda akademik makale incelenip raporlanmıştır |
-| **Görselleştirme** | Matplotlib, Seaborn |
-
----
-
-## 📂 Proje Yapısı
-
-```
-├── preprocessing/          # Veri ön işleme ve temizleme scriptleri
-├── hafta 2/                # Haftalık staj görevleri ve kodları
-├── hafta 3/                # Haftalık staj görevleri ve algoritmalar
-├── benim_gorsellerim/      # Analiz sonuçlarına ait grafikler
-├── stajdefteri/            # Resmi staj defteri dokümanları
-├── README.md               # Bu dosya
-└── *.docx & *.pdf          # Churn ve CLV üzerine makale ve rapor çevirileri
-```
-
----
-
-## ⚠️ Önemli Notlar
-
-- Bu repodaki dosyalar ağırlıklı olarak **Veri Bilimi (Data Science)** araştırma raporlarını, akademik makale incelemelerini ve veri ön işleme (preprocessing) adımlarını içermektedir.
-- Projenin teorik altyapısı geniş bir akademik literatür taraması (`.docx` ve `.pdf` dosyaları) yapılarak desteklenmiştir.
-
----
-
-## 🛠️ Kullanılan Teknolojiler
-
-- **Python** - Ana geliştirme dili
-- **Scikit-Learn** - Makine Öğrenmesi modelleri
-- **Pandas & NumPy** - Veri analizi ve manipülasyon
-- **Matplotlib & Seaborn** - Grafikler ve veri görselleştirme
+1. Kodu çalıştırarak modeli eğitin ve güncel risk tablosunu oluşturun:
+   ```bash
+   python "HAFTA 6/final_pipeline.py"
+   ```
+2. Paneli (Dashboard) başlatarak analizleri görüntüleyin:
+   ```bash
+   streamlit run "HAFTA 6/churn_dashboard.py"
+   ```
