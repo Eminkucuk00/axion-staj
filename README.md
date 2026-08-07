@@ -15,7 +15,7 @@ Bu dosya, ham veri setini alan ve makine öğrenmesi modelini uçtan uca eğiten
 - **Dengesiz Veri Çözümü (SMOTE):** Churn (terk eden) müşteri sayısının azlığını SMOTE algoritmasıyla dengeler.
 - **Model Eğitimi:** XGBoost algoritmasını `max_depth=6`, `learning_rate=0.1` hiperparametreleriyle eğitir.
 - **Açıklanabilirlik (SHAP):** Sadece kimin churn olacağını tahmin etmekle kalmaz, **SHAP TreeExplainer** kullanarak her müşterinin *neden* riskli olduğunu (Ana Risk Nedeni) matematiksel olarak kanıtlar.
-- **Çıktı:** 10.127 müşterinin tamamını 0.30 optimum eşik mantığıyla skorlar ve `Musteri_Risk_Cikti_Tablosu_Guncel.csv` tablosunu üretir.
+- **Çıktı:** 10.127 müşterinin tamamını 0.40 eşik değeriyle skorlar ve `Musteri_Risk_Cikti_Tablosu_Guncel.csv` tablosunu üretir.
 
 ### 2. `HAFTA 6/churn_dashboard.py`
 Bu dosya, eğitilen modelin ürettiği sonuçları (CSV tablosunu) iş birimlerinin (yöneticilerin, şube müdürlerinin) kullanımına sunan **Streamlit** tabanlı interaktif bir web arayüzüdür.
