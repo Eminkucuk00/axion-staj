@@ -56,7 +56,7 @@ st.sidebar.metric(
 )
 
 st.title("📊 Churn Dashboard - Müşteri Kayıp Riski Panosu")
-st.markdown("*XGBoost (SMOTE + 0.40) modeli çıktıları üzerinden interaktif analiz*")
+st.markdown("*XGBoost (SMOTE + 0.30) modeli çıktıları üzerinden interaktif analiz*")
 st.markdown("---")
 
 kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
@@ -248,4 +248,4 @@ st.dataframe(
 
 st.markdown("---")
 
-st.caption("📌 Model: XGBoost (SMOTE + Eşik 0.40)  | Veri: 2026 Test Müşterisi | Hazırlayan: Mehmet Emin KÜÇÜK")
+st.caption("📌 Model: XGBoost (SMOTE + Eşik 0.30)  | Veri: 2026 Test Müşterisi | Hazırlayan: Mehmet Emin KÜÇÜK")
