@@ -1,0 +1,75 @@
+### 📊 EDA Bulguları ve İş Diliyle (Business) Yorumlar
+
+**1 & 2. Grafik: Satış ve Müşteri Sadakati (Ürün Bazlı)**
+Listeyi 17.500+ satış bandıyla "Banana" (Muz) sürüklerken, ilk 15 ürünün %90'ının "Organik" ürünler olması, platform kullanıcılarının gelir seviyesi yüksek ve sağlıklı yaşama odaklı bir kitle olduğunu kanıtlıyor. Sadakat grafiği de satış grafiğiyle birebir örtüşüyor; organik taze ürünler tedarik edilemezse sepet terk edilme oranı dramatik artacaktır.
+
+**3. Grafik: Haftalık Sipariş Yoğunluğu**
+Hafta sonları (0. ve 1. gün) sipariş sayıları 60.000 bandına dayanarak zirve yaparken, Çarşamba (4. gün) 40.000 bandına kadar gerileyerek haftanın en ölü günü olmaktadır. Promosyon bütçelerinin hafta sonuna değil, siparişleri canlandırmak adına Salı-Çarşamba günlerine (Push Notification ile) kaydırılması mantıklı olacaktır.
+
+**4. Grafik: Saatlik Sipariş Yoğunluğu (Prime-Time)**
+Günlük trafik sabah 09:00'da yükselişe geçip 10:00-11:00 saatlerinde tepe noktasına ulaşmakta ve 16:00'ya kadar platoda kalmaktadır. Gece 00:00 ile 05:00 arası sistemin tamamen boşta olduğu yegane aralıktır; planlı sunucu bakımları ve veritabanı yedeklemeleri kesinlikle bu saat aralığında yapılmalıdır.
+
+**5. Grafik: Sepet Büyüklüğü (AOV)**
+Müşterilerin ezici bir çoğunluğu tek seferde 4 ila 6 parça ürün satın almaktadır. Ortalama sepet hacmini artırmak için "Çapraz Satış" (Cross-Sell) modelleri kurulmalı, 5 parça ürün alana sepette +2 tamamlayıcı ürün önerisi sunulmalıdır.
+
+**6. Grafik: Ziyaret Sıklığı (Geçen Gün Sayısı)**
+Müşterilerin alışveriş frekansında 7, 14 ve 21. günlerde keskin tepecikler gözlemlenmektedir (Haftalık ritüel). Ancak asıl dikkat çeken, grafiğin en sağındaki (30. gün) devasa sıçramadır. Müşterilerin çok büyük bir kısmı bir sonraki alışveriş için "Ay Başını/Maaş Gününü" beklemektedir. Ay sonlarında "Ay Sonu İndirimi" tarzı kampanyalarla bu bekleme süresi 20'li günlere çekilebilir.
+
+**7 & 8. Grafik: Ürün Sadakati (Reorder Oranları)**
+Satılan ürünlerin net olarak **%59.9**'u, müşterilerin daha önce de alıp sadık kaldığı ürünlerdir. Çizgi grafiğine bakıldığında sadakat oranının sabah 06:00-08:00 sularında %65 ile zirve yaptığı görülüyor. Erken saatlerde sipariş veren kitle yeni ürün denemeye kapalı, hedefe odaklıdır. Yeni (sponsorlu) ürün reklamları sabah saatleri yerine, insanların daha açık fikirli olduğu öğleden sonra veya akşam saatlerinde gösterilmelidir.
+
+**9 & 10. Grafik: Aykırı Değerler (Boxplot Analizi)**
+Sepetlerin medyanı 10 civarında olmasına rağmen, kutu grafiğindeki sağa uzanan yoğun siyah nokta bulutu (outliers), platformda 40-50+ ürünlük alışveriş yapan çok ciddi bir kitle olduğunu gösteriyor. Bu kişilerin normal bir aile değil, B2B (kafe, restoran, ofis) müşterileri olma ihtimali yüksektir. Bu hesaplar tespit edilip onlara özel "Toptan Satış Üyeliği / B2B Paneli" açılmalıdır.
+
+---
+# --- BÖLÜM 3: ASSOCIATION RULES (BİRLİKTELİK KURALLARI) ---
+# mlxtend kütüphanesi kurulu değilse sessizce kurar
+!pip install mlxtend -q
+
+import pandas as pd
+from mlxtend.frequent_patterns import fpgrowth
+from mlxtend.frequent_patterns import association_rules
+
+# İşlem hızını artırmak ve RAM'i yormamak için, sadece en çok satılan ilk 10.000 ürünü filtreleyeceğiz.
+populer_10000_urun = temiz_sepet_datasi['product_name'].value_counts().head(10000).index
+analiz_verisi = temiz_sepet_datasi[temiz_sepet_datasi['product_name'].isin(populer_10000_urun)]
+
+# 1. TRANSACTION MATRIX (Sepet Matrisi) HAZIRLIĞI
+print("Transaction Matrix oluşturuluyor ...")
+sepet_matrisi = (analiz_verisi.groupby(['order_id', 'product_name'])
+                 .size()
+                 .unstack(fill_value=0)
+                 .astype('bool'))
+
+# 2. FP-GROWTH ALGORİTMASI 
+print("FP-Growth algoritması çalıştırılıyor...")
+sik_ogeler = fpgrowth(sepet_matrisi, min_support=0.01, use_colnames=True)
+
+# 3. METRİKLERİN (Support, Confidence, Lift) HESAPLANMASI
+print("Kurallar ve Metrikler hesaplanıyor...")
+kurallar = association_rules(sik_ogeler, metric="lift", min_threshold=1.2)
+
+# 4. EN ANLAMLI 10 KURALIN LİSTELENMESİ
+anlamli_kurallar = kurallar.sort_values(by=['lift', 'confidence'], ascending=[False, False]).head(10)
+
+print("\n--- EN ANLAMLI 10 ÜRÜN BİRLİKTELİĞİ ---")
+display(anlamli_kurallar[['antecedents', 'consequents', 'support', 'confidence', 'lift']])
+
+print(f"Modele giren net fiş sayısı: {len(sepet_matrisi)}")
+---
+### 📊 Birliktelik Kuralları (Association Rules) İş Modeli Çıktıları ve Aksiyon Önerileri
+
+FP-Growth algoritması sonuçlarına göre, platformdaki müşterilerin alışveriş alışkanlıklarında öne çıkan en güçlü 3 stratejik "Çapraz Satış" (Cross-Sell) örüntüsü şunlardır:
+
+**1. Narenciye Sinerjisi (Limes & Large Lemon)**
+* **Bulgu:** Listemizin zirvesindeki kurala göre, Misket Limonu (Limes) alan müşterilerin %26'sı sepetine Büyük Limon (Large Lemon) da eklemektedir. Bu ikilinin `Lift` (Kaldıraç) değeri **4.22** gibi muazzam bir seviyededir; yani bu ürünlerin birlikte satılma ihtimali, tesadüfi satılma ihtimalinden 4 kat daha fazladır!
+* **Aksiyon (Tavsiye Motoru):** Kullanıcı sepetine Limes eklediği anda ekranda hemen "Büyük Limon" önerisi çıkarılmalıdır. Mutfak alışkanlıkları (kokteyl, salata, sos yapımı) gereği birbirini çok güçlü tamamlayan bu iki ürün, "Narenciye Paketi" (Citrus Bundle) adı altında indirimli bir set olarak da sunulabilir.
+
+**2. Sağlıklı Kahvaltı ve "Smoothie" Etkisi (Raspberries & Strawberries)**
+* **Bulgu:** Organik Ahududu (Raspberries) alan müşterilerin %30'u (çok yüksek bir Confidence oranı) mutlaka Organik Çilek (Strawberries) de satın almaktadır. (`Lift: 3.59`).
+* **Aksiyon (Sepet Büyütme):** Bu davranış tipik bir "Smoothie" veya sağlıklı kahvaltı profilini işaret etmektedir. Uygulama içinde "Orman Meyveleri Paketi" oluşturulabilir veya müşteri bu meyvelerden birini sepete attığında ödeme sayfasında (Checkout) diğer meyve "Bunu alanlar bunu da aldı" widget'ı ile gösterilerek Ortalama Sepet Tutarı (AOV) artırılabilir.
+
+**3. Tarif Bazlı Tüketim (Avocado & Lemon)**
+* **Bulgu:** Organik Avokado alan müşterilerin sepete Büyük Limon ekleme eğiliminin (`Lift: 2.91`) oldukça güçlü olduğu görülmüştür. 
+* **Aksiyon (Pazarlama):** Bu kural, Avokado'nun tüketim şeklinden (Limon suyu ve Avokado ezmesi / Guacamole tarifi) kaynaklanmaktadır. Bu veri bize, ürünleri kategorilerine göre değil, **"Tüketim Tariflerine"** göre yan yana önermenin (Recipe-based marketing) satışları doğrudan artıracağını matematiksel olarak kanıtlamaktadır.
+---

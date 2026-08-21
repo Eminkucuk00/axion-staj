@@ -1,0 +1,207 @@
+import pandas as pd
+
+# Verileri Okuma
+siparisler = pd.read_csv("data/orders.csv")
+sepet_icerigi = pd.read_csv("data/order_products__train.csv")
+urunler = pd.read_csv("data/products.csv")
+
+# Dataset kolonlarını ve veri tiplerini incele
+print("--- Siparişler Tablosu Bilgileri ---")
+print(siparisler.info())
+
+# Transaction ID / basket ID yapısını belirle
+print("\n--- Sepet İçeriği İlk 5 Satır ---")
+print(sepet_icerigi.head())
+
+# Product ID / product name kolonlarını belirle
+print("\n--- Ürünler Tablosu İlk 5 Satır ---")
+print(urunler.head())
+
+
+
+---HUCRE---
+
+# Eksik (Null) ve Tekrar Eden (Duplicate) Kayıt kontrolleri
+print("--- Eksik Veri Kontrolü ---")
+print("Siparişler Boş Veriler:\n", siparisler.isnull().sum())
+print("Sepet İçeriği Boş Veriler:\n", sepet_icerigi.isnull().sum())
+print("Ürünler Boş Veriler:\n", urunler.isnull().sum())
+
+print("\n--- Tekrar Eden (Duplicate) Kayıt Kontrolü ---")
+print("Siparişler Duplicate:", siparisler.duplicated().sum())
+print("Sepet İçeriği Duplicate:", sepet_icerigi.duplicated().sum())
+print("Ürünler Duplicate:", urunler.duplicated().sum())
+
+# İade, Negatif değer veya Boş Ürün Adı Analizi
+print("\n--- Anormallik Kontrolü ---")
+negatif_sira = (sepet_icerigi['add_to_cart_order'] < 0).sum()
+print("Negatif değerli sepete ekleme sırası var mı?:", negatif_sira)
+
+# Ürün tablosunda ismi olmayan 'isimsiz kayıt var mı?
+isimsiz_urunler = urunler['product_name'].isnull().sum()
+print("İsmi eksik (NaN) olan ürün sayısı:", isimsiz_urunler)
+
+---HUCRE---
+
+# Temizlenmiş transaction datasını oluşturuyorum
+
+# 1. İlk siparişlerdeki beklenen boşlukları (NaN), geçen gün (0) olacak şekilde dolduruyorum.
+siparisler['days_since_prior_order'] = siparisler['days_since_prior_order'].fillna(0)
+
+# 2. Sepet içeriği ile Ürün isimlerini eşleştirerek birleştiriyorum. (Transaction Datasını oluşturma)
+temiz_sepet_datasi = pd.merge(sepet_icerigi, urunler[['product_id', 'product_name']], on='product_id', how='left')
+
+# Oluşan nihai temiz transaction (Sepet) verisinin ilk 5 satırına bakıyorum.
+print("--- Temizlenmiş Transaction Datası (İlk 5 Satır) ---")
+print(temiz_sepet_datasi.head())
+
+---HUCRE---
+
+# --- BÖLÜM 1: Temel Sepet KPI'larının (Anahtar Performans Göstergelerinin) Hesaplaması ---
+
+# 1. Toplam Müşteri, Sepet ve Ürün Çeşidi Sayısı
+toplam_musteri = siparisler['user_id'].nunique()
+toplam_sepet = siparisler['order_id'].nunique()
+toplam_urun = urunler['product_id'].nunique()
+
+# 2. Satılan Toplam Ürün Adedi (Hacim)
+toplam_Satilan_adet = len(temiz_sepet_datasi)
+
+# 3. Sepet Başına Ortalama Ürün Sayısı (AOV - Average Order Volume)
+sepet_buyuklukleri = temiz_sepet_datasi.groupby('order_id').size()
+ortalama_sepet_buyuklugu = sepet_buyuklukleri.mean()
+
+# 4. Sonuçları Ekrana Yazdırıyorum
+print("📊 TEMEL SEPET KPI'LARI 📊")
+print(f"Toplam Müşteri Sayısı: {toplam_musteri:,.0f}")
+print(f"Toplam Sepet Sayısı: {toplam_sepet:,.0f}")
+print(f"Katalogdaki Çeşit Sayısı: {toplam_urun:,.0f}")
+print(f"Satılan Toplam Ürün Adedi: {toplam_Satilan_adet:,.0f}")
+print(f"Bir Sepetteki Ortalama Ürün Sayısı (AOV): {ortalama_sepet_buyuklugu:.2f} adet")
+
+---HUCRE---
+
+# --- BÖLÜM 2: 10 ADET ANLAMLI EDA GRAFİĞİ ---
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+sns.set_theme(style="whitegrid")
+
+saatlik_veri = pd.merge(temiz_sepet_datasi, siparisler[['order_id', 'order_hour_of_day']], on='order_id', how='left')
+sepet_buyuklukleri = temiz_sepet_datasi.groupby('order_id').size()
+siparis_ve_buyukluk = pd.merge(siparisler, sepet_buyuklukleri.rename('sepet_buyuklugu'), on='order_id', how='inner')
+
+fig, axes = plt.subplots(nrows=10, ncols=1, figsize=(14,60))
+plt.subplots_adjust(hspace=0.5)
+
+# 1.Grafik
+en_cok_satilanlar = temiz_sepet_datasi['product_name'].value_counts().head(15)
+sns.barplot(x=en_cok_satilanlar, y=en_cok_satilanlar.index, palette="viridis", ax=axes[0])
+axes[0].set_title('1. En Çok Satılaan İlk 15 Ürün', fontsize=16, fontweight='bold')
+axes[0].set_xlabel('Satış Adedi', fontsize=12)
+axes[0].set_ylabel('Ürün Adı', fontsize=12)
+
+# 2.GRAFİK
+sadik_urunler = temiz_sepet_datasi[temiz_sepet_datasi['reordered'] == 1] ['product_name'].value_counts().head(15)
+sns.barplot(x=sadik_urunler.values, y=sadik_urunler.index, palette="magma", ax=axes[1])
+axes[1].set_title('2. En Sadık (Çok Tekrar Sipariş Edilen) 15 Ürün', fontsize=16, fontweight='bold')
+axes[1].set_xlabel('Tekrar Alınma Sayısı', fontsize=12)
+axes[1].set_ylabel('Ürün Adı', fontsize=12)
+
+# 3.GRAFİK
+gunluk_yogunluk = siparisler['order_dow'].value_counts().sort_index()
+sns.barplot(x=gunluk_yogunluk.index, y=gunluk_yogunluk.values, palette="Blues_d", ax=axes[2])
+axes[2].set_title('3. Haftanın Günlerine Göre Sipariş Yoğunluğu (0: Cumartesi, 1: Pazar)', fontsize=16, fontweight='bold')
+axes[2].set_xlabel('Haftanın Günü', fontsize=12)
+axes[2].set_ylabel('Sipariş Sayısı', fontsize=12)
+
+# 4.GRAFİK
+saatlik_yogunluk = siparisler['order_hour_of_day'].value_counts().sort_index()
+sns.barplot(x=saatlik_yogunluk.index, y=saatlik_yogunluk.values, palette='Reds_d', ax=axes[3])
+axes[3].set_title('4. Günün Saatlerine Göre Sipariş Yoğunluğu (Prime-Time)', fontsize=16, fontweight='bold')
+axes[3].set_xlabel('Saat', fontsize=12)
+axes[3].set_ylabel('Sipariş Sayısı', fontsize=12)
+
+# 5.GRAFİK
+sns.histplot(sepet_buyuklukleri, bins=50, kde=True, color="purple", ax=axes[4])
+axes[4].set_title('5. Sepet Büyüklüğğü Dağılımı (Histogram)', fontsize=16, fontweight='bold')
+axes[4].set_xlabel('Sepetteki Ürün Sayısı', fontsize=12)
+axes[4].set_ylabel('Sepet Sayısı', fontsize=12)
+axes[4].set_xlim(0, 50)
+
+# 6.GRAFİK
+sns.histplot(siparisler['days_since_prior_order'], bins=30, kde=True, color="green", ax=axes[5])
+axes[5].set_title('6. Önceki Siparişten Geçen Gün Süresi', fontsize=16, fontweight='bold')
+axes[5].set_xlabel('Geçen Gün Sayısı', fontsize=12)
+axes[5].set_ylabel('Sipariş Sayısı', fontsize=12)
+
+# 7.GRAFİK
+reorder_oranlari = temiz_sepet_datasi['reordered'].value_counts()
+axes[6].pie(reorder_oranlari, labels=['Tekrar Alınan (Reordered)', 'İlk Kez Alınan'], autopct='%1.1f%%', colors=['skyblue', 'lightcoral'], startangle=90)
+axes[6].set_title('7. Sepete Atılan Ürünlerin Tekrar Alınma Oranı', fontsize=16, fontweight='bold')
+
+# 8.GRAFİK
+saatlik_reorder_orani = saatlik_veri.groupby('order_hour_of_day')['reordered'].mean()
+sns.lineplot(x=saatlik_reorder_orani.index, y=saatlik_reorder_orani.values, marker="o", color="orange", linewidth=2.5, ax=axes[7])
+axes[7].set_title('8. Günün Saatlerine Göre Ürün Sadakati (Reorder Oranı)', fontsize=16, fontweight='bold')
+axes[7].set_xlabel('Saat', fontsize=12)
+axes[7].set_ylabel('Reorder Oranı', fontsize=12)
+axes[7].set_ylim(0.5, 0.7)
+
+# 9.GRAFİK
+sns.boxplot(x=sepet_buyuklukleri.values, color="cyan", ax=axes[8])
+axes[8].set_title('9. Sepet Büyüklüğü Boxplot Grafiği', fontsize=16, fontweight='bold')
+axes[8].set_xlabel('Sepetteki Ürün Sayısı', fontsize=12)
+
+# 10.GRAFİK 
+sns.boxplot(x='order_dow', y='sepet_buyuklugu', data=siparis_ve_buyukluk, palette="Set3", ax=axes[9])
+axes[9].set_title('10. Haftanın Günlerine Göre Sepet Büyüklük Dağılımı', fontsize=16, fontweight='bold')
+axes[9].set_xlabel('Haftanın Günü(0: Cumartesi, 1: Pazar)', fontsize=12)
+axes[9].set_ylabel('Sepetteki Ürün Sayısı', fontsize=12)
+axes[9].set_ylim(0, 50)
+
+plt.show()
+
+
+
+
+
+
+
+---HUCRE---
+
+# --- BÖLÜM 3: ASSOCIATION RULES (BİRLİKTELİK KURALLARI) ---
+# mlxtend kütüphanesi kurulu değilse sessizce kurar
+!pip install mlxtend -q
+
+import pandas as pd
+from mlxtend.frequent_patterns import fpgrowth
+from mlxtend.frequent_patterns import association_rules
+
+# İşlem hızını artırmak ve RAM'i yormamak için, sadece en çok satılan ilk 10.000 ürünü filtreleyeceğiz.
+populer_10000_urun = temiz_sepet_datasi['product_name'].value_counts().head(10000).index
+analiz_verisi = temiz_sepet_datasi[temiz_sepet_datasi['product_name'].isin(populer_10000_urun)]
+
+# 1. TRANSACTION MATRIX (Sepet Matrisi) HAZIRLIĞI
+print("Transaction Matrix oluşturuluyor ...")
+sepet_matrisi = (analiz_verisi.groupby(['order_id', 'product_name'])
+                 .size()
+                 .unstack(fill_value=0)
+                 .astype('bool'))
+
+# 2. FP-GROWTH ALGORİTMASI 
+print("FP-Growth algoritması çalıştırılıyor...")
+sik_ogeler = fpgrowth(sepet_matrisi, min_support=0.01, use_colnames=True)
+
+# 3. METRİKLERİN (Support, Confidence, Lift) HESAPLANMASI
+print("Kurallar ve Metrikler hesaplanıyor...")
+kurallar = association_rules(sik_ogeler, metric="lift", min_threshold=1.2)
+
+# 4. EN ANLAMLI 10 KURALIN LİSTELENMESİ
+anlamli_kurallar = kurallar.sort_values(by=['lift', 'confidence'], ascending=[False, False]).head(10)
+
+print("\n--- EN ANLAMLI 10 ÜRÜN BİRLİKTELİĞİ ---")
+display(anlamli_kurallar[['antecedents', 'consequents', 'support', 'confidence', 'lift']])
+
+print(f"Modele giren net fiş sayısı: {len(sepet_matrisi)}")

@@ -1,0 +1,8 @@
+streamlit
+pandas
+plotly
+requests
+mlxtend
+networkx
+streamlit-option-menu
+streamlit-lottie
