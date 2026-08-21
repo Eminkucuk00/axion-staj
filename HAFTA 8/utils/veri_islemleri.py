@@ -1,40 +1,46 @@
 import pandas as pd
 import streamlit as st
 
-@st.cache_data
+@st.cache_resource
 def veri_yukle():
     """
     Instacart veri setlerini okur, temizler ve birleştirir.
-    Performans için @st.cache_data ile önbelleğe alınır.
+    Performans için @st.cache_resource ile referans döner (bellek dostu).
     """
     import os
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     try:
-        siparisler = pd.read_csv(os.path.join(base_dir, "data", "orders.zip"))
+        siparisler = pd.read_csv(
+            os.path.join(base_dir, "data", "orders.zip"),
+            usecols=["order_id", "order_dow", "order_hour_of_day", "days_since_prior_order"]
+        )
         sepet_icerigi = pd.read_csv(os.path.join(base_dir, "data", "order_products__train.zip"))
-        urunler = pd.read_csv(os.path.join(base_dir, "data", "products.zip"))
+        urunler = pd.read_csv(
+            os.path.join(base_dir, "data", "products.zip"),
+            usecols=["product_id", "product_name"]
+        )
     except FileNotFoundError:
         st.error("Veri dosyaları bulunamadı. Lütfen 'data/' klasörünün içinde doğru CSV dosyalarının olduğundan emin olun.")
         st.stop()
 
-    temiz_sepet_datasi = pd.merge(sepet_icerigi, urunler[['product_id', 'product_name']], on='product_id', how='left')
+    temiz_sepet_datasi = pd.merge(sepet_icerigi, urunler, on='product_id', how='left')
     
     # RAM Tasarrufu: object (string) tipini category tipine çeviriyoruz (100MB+ tasarruf)
     temiz_sepet_datasi['product_name'] = temiz_sepet_datasi['product_name'].astype('category')
     
     ana_veri = pd.merge(
         temiz_sepet_datasi, 
-        siparisler[['order_id', 'order_dow', 'order_hour_of_day', 'days_since_prior_order']], 
+        siparisler, 
         on='order_id', 
         how='left'
     )
     
-    return ana_veri, siparisler
+    return ana_veri
 
 def veriyi_filtrele(df, secilen_gun, secilen_saat):
     """
     Kullanıcının Sidebar'da seçtiği filtreleri uygular.
-    RAM dolmasını engellemek için kopya (.copy) yerine maske kullanır.
+    (Boolean maske yöntemi kullanılır).
     """
     mask = pd.Series(True, index=df.index)
     
@@ -55,10 +61,14 @@ def veriyi_filtrele(df, secilen_gun, secilen_saat):
     return df[mask]
 
 @st.cache_data
-def association_rules_hesapla(df):
+def association_rules_hesapla(secilen_gun, secilen_saat):
     """
-    Filtrelenmiş veriye göre sepet analizi kurallarını hesaplar.
+    Seçilen filtrelere göre sepet analizi kurallarını hesaplar.
+    RAM tasarrufu için df yerine filtre parametrelerini alır (Cache Key boyutu küçüldü).
     """
+    ana_veri = veri_yukle()
+    df = veriyi_filtrele(ana_veri, secilen_gun, secilen_saat)
+    
     from mlxtend.frequent_patterns import fpgrowth
     from mlxtend.frequent_patterns import association_rules
     import pandas as pd

@@ -192,15 +192,18 @@ components.html(
 )
 
 # 3. Veri Yükleme
-ana_veri, siparisler = veri_yukle()
+ana_veri = veri_yukle()
 
 # Lottie animasyonu fonksiyonu
 @st.cache_data
 def load_lottieurl(url: str):
-    r = requests.get(url)
-    if r.status_code != 200:
+    try:
+        r = requests.get(url, timeout=5)
+        if r.status_code != 200:
+            return None
+        return r.json()
+    except:
         return None
-    return r.json()
 
 # 4. Sol Menü (Sidebar) - Dinamik Filtreleme
 with st.sidebar:
@@ -320,7 +323,7 @@ elif secili_sekme == "Ağ Analizi":
     st.markdown("### :material/hub: Ürün Birliktelik Ağı (Association Rules)")
     
     with st.spinner("Apriori Algoritması çalışıyor, kurallar hesaplanıyor... (Bu işlem birkaç saniye sürebilir)"):
-        kurallar = association_rules_hesapla(filtrelenmis_veri)
+        kurallar = association_rules_hesapla(secilen_gun, secilen_saat)
         
     if kurallar.empty:
         st.warning("Bu filtre kombinasyonu için anlamlı kural bulunamadı. Lütfen filtreleri gevşetin.")
@@ -341,7 +344,7 @@ elif secili_sekme == "Cross-Sell AI":
     st.markdown("### :material/track_changes: AI Destekli Çapraz Satış (Cross-Sell) Motoru")
     st.write("Müşterinin sepetine eklediği ürünü seçin, öneri motorumuz en yüksek sinerjiye sahip ürünleri getirsin.")
     
-    kurallar = association_rules_hesapla(filtrelenmis_veri)
+    kurallar = association_rules_hesapla(secilen_gun, secilen_saat)
     
     if kurallar.empty:
         st.warning("Bu filtreler için kural üretilemedi.")

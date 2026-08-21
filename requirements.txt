@@ -5,7 +5,7 @@ scipy
 scikit-learn
 plotly
 requests
-mlxtend
+mlxtend>=0.21.0
 networkx
 streamlit-option-menu
 streamlit-lottie
