@@ -63,12 +63,15 @@ def association_rules_hesapla(df):
     populer_urunler = df['product_name'].value_counts().head(10000).index
     analiz_verisi = df[df['product_name'].isin(populer_urunler)]
     
-    # Hızlı C-seviyesi unstack işlemi (Yavaş map() fonksiyonu iptal edildi)
-    sepet_matrisi = (analiz_verisi.groupby(['order_id', 'product_name'])
-                     .size()
-                     .unstack(fill_value=0)
-                     .astype('bool')
-                     .astype(pd.SparseDtype(bool, False)))
+    from mlxtend.preprocessing import TransactionEncoder
+    
+    # OOM (Out of Memory) çökmesini engellemek için unstack (yoğun matris) yerine
+    # doğrudan seyrek (sparse) matris oluşturan TransactionEncoder kullanıyoruz.
+    islemler = analiz_verisi.groupby('order_id')['product_name'].apply(list).values
+    
+    te = TransactionEncoder()
+    te_ary = te.fit(islemler).transform(islemler, sparse=True)
+    sepet_matrisi = pd.DataFrame.sparse.from_spmatrix(te_ary, columns=te.columns_)
     
     frequent_itemsets = fpgrowth(sepet_matrisi, min_support=0.01, use_colnames=True)
     
