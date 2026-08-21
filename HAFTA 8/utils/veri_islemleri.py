@@ -67,7 +67,8 @@ def association_rules_hesapla(df):
     sepet_matrisi = (analiz_verisi.groupby(['order_id', 'product_name'])
                      .size()
                      .unstack(fill_value=0)
-                     .astype('bool'))
+                     .astype('bool')
+                     .astype(pd.SparseDtype(bool, False)))
     
     frequent_itemsets = fpgrowth(sepet_matrisi, min_support=0.01, use_colnames=True)
     
