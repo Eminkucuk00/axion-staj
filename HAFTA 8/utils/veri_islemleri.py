@@ -7,10 +7,12 @@ def veri_yukle():
     Instacart veri setlerini okur, temizler ve birleştirir.
     Performans için @st.cache_data ile önbelleğe alınır.
     """
+    import os
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     try:
-        siparisler = pd.read_csv("data/orders.zip")
-        sepet_icerigi = pd.read_csv("data/order_products__train.zip")
-        urunler = pd.read_csv("data/products.zip")
+        siparisler = pd.read_csv(os.path.join(base_dir, "data", "orders.zip"))
+        sepet_icerigi = pd.read_csv(os.path.join(base_dir, "data", "order_products__train.zip"))
+        urunler = pd.read_csv(os.path.join(base_dir, "data", "products.zip"))
     except FileNotFoundError:
         st.error("Veri dosyaları bulunamadı. Lütfen 'data/' klasörünün içinde doğru CSV dosyalarının olduğundan emin olun.")
         st.stop()
