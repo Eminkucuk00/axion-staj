@@ -19,9 +19,6 @@ def veri_yukle():
 
     temiz_sepet_datasi = pd.merge(sepet_icerigi, urunler[['product_id', 'product_name']], on='product_id', how='left')
     
-    # RAM Tasarrufu: object (string) tipini category tipine çeviriyoruz (100MB+ tasarruf)
-    temiz_sepet_datasi['product_name'] = temiz_sepet_datasi['product_name'].astype('category')
-    
     ana_veri = pd.merge(
         temiz_sepet_datasi, 
         siparisler[['order_id', 'order_dow', 'order_hour_of_day', 'days_since_prior_order']], 
@@ -34,25 +31,24 @@ def veri_yukle():
 def veriyi_filtrele(df, secilen_gun, secilen_saat):
     """
     Kullanıcının Sidebar'da seçtiği filtreleri uygular.
-    RAM dolmasını engellemek için kopya (.copy) yerine maske kullanır.
     """
-    mask = pd.Series(True, index=df.index)
+    filtrelenmis = df.copy()
     
     # Gün Filtresi
     if secilen_gun == "Hafta İçi":
-        mask = mask & df['order_dow'].isin([2, 3, 4, 5, 6])
+        filtrelenmis = filtrelenmis[filtrelenmis['order_dow'].isin([2, 3, 4, 5, 6])]
     elif secilen_gun == "Hafta Sonu":
-        mask = mask & df['order_dow'].isin([0, 1])
+        filtrelenmis = filtrelenmis[filtrelenmis['order_dow'].isin([0, 1])]
         
     # Saat Filtresi
     if secilen_saat == "Sabah (06-12)":
-        mask = mask & (df['order_hour_of_day'] >= 6) & (df['order_hour_of_day'] < 12)
+        filtrelenmis = filtrelenmis[(filtrelenmis['order_hour_of_day'] >= 6) & (filtrelenmis['order_hour_of_day'] < 12)]
     elif secilen_saat == "Öğle (12-18)":
-        mask = mask & (df['order_hour_of_day'] >= 12) & (df['order_hour_of_day'] < 18)
+        filtrelenmis = filtrelenmis[(filtrelenmis['order_hour_of_day'] >= 12) & (filtrelenmis['order_hour_of_day'] < 18)]
     elif secilen_saat == "Akşam (18-24)":
-        mask = mask & ((df['order_hour_of_day'] >= 18) | (df['order_hour_of_day'] < 6))
+        filtrelenmis = filtrelenmis[(filtrelenmis['order_hour_of_day'] >= 18) | (filtrelenmis['order_hour_of_day'] < 6)]
         
-    return df[mask]
+    return filtrelenmis
 
 @st.cache_data
 def association_rules_hesapla(df):
@@ -67,21 +63,11 @@ def association_rules_hesapla(df):
     populer_urunler = df['product_name'].value_counts().head(10000).index
     analiz_verisi = df[df['product_name'].isin(populer_urunler)]
     
-    from mlxtend.preprocessing import TransactionEncoder
-    
-    # OOM (Out of Memory) çökmesini engellemek için unstack (yoğun matris) yerine
-    # doğrudan seyrek (sparse) matris oluşturan TransactionEncoder kullanıyoruz.
-    islemler = analiz_verisi.groupby('order_id')['product_name'].apply(list).values
-    
-    te = TransactionEncoder()
-    te_ary = te.fit(islemler).transform(islemler, sparse=True)
-    sepet_matrisi = pd.DataFrame.sparse.from_spmatrix(te_ary, columns=te.columns_)
-    
-    # RAM'i hemen boşalt
-    del islemler
-    del te_ary
-    import gc
-    gc.collect()
+    # Hızlı C-seviyesi unstack işlemi (Yavaş map() fonksiyonu iptal edildi)
+    sepet_matrisi = (analiz_verisi.groupby(['order_id', 'product_name'])
+                     .size()
+                     .unstack(fill_value=0)
+                     .astype('bool'))
     
     frequent_itemsets = fpgrowth(sepet_matrisi, min_support=0.01, use_colnames=True)
     
